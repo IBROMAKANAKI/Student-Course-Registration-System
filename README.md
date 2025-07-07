@@ -1,2 +1,4 @@
-# Student-Course-Registration-System
-Student Course Registration System
+<p align="right">
+  <img src="Student Course Registration System Report/Asset/Image/Datakirk logo.jpg" alt="Datakirk logo" width="150">
+</p>
+
