@@ -1,1 +1,6 @@
-
+title: Salawudeen Ibrahim
+logo: assets/images/datakirk-logo.jpg 
+show_downloads: true
+remote_theme: pages-themes/minimal@v0.2.0
+plugins:
+  - jekyll-paginate
