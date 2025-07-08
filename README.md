@@ -27,6 +27,7 @@ To design and implement a robust relational database system that effectively man
 | **Enrollments**     | Records of students registering for specific course offerings.     | EnrollmentID, StudentID, OfferingID, Grade, Date       |
 | **Prerequisites**   | Courses that must be completed before enrolling in another course. | CourseID, PrerequisiteID                               |
 
+
   1. Students ↔ Enrollments
      Type: One-to-Many
      Explanation: A single student can enroll in multiple course offerings, but each enrollment record refers to only one student.
@@ -51,37 +52,40 @@ To design and implement a robust relational database system that effectively man
      Type: Many-to-Many (Self-Referencing)
      Explanation: A course can have multiple prerequisites, and a course can be a prerequisite for multiple other courses.
      Implementation: Prerequisites table acts as a bridge with composite keys CourseID and PrerequisiteID.
+     
 
-           | Relationship                     | Type         |
-     | ---------------------------------- | ------------ |
-     | **Student → Enrollments**              | One-to-Many  |
-     | **Course → CourseOfferings **          | One-to-Many  |
-     | **Instructor → CourseOfferings**       | One-to-Many  |
-     | **CourseOffering → Enrollments**       | One-to-Many  |
-     | ** Course ↔ Prerequisites (Self-join)** | Many-to-Many |
+    | Relationship                       | Type         |
+| ---------------------------------- | -----------------|
+| **Student → Enrollments**             | One-to-Many   |
+| **Course → CourseOfferings**           | One-to-Many  |
+| **Instructor → CourseOfferings**       | One-to-Many  |
+| **CourseOffering → Enrollments**       | One-to-Many  |
+| **Course ↔ Prerequisites (Self-join)** | Many-to-Many |
+
+     
 
    
-                 | Relationship                                | Type                          | Description                                                                       |
-     |---------------------------------------------|-------------------------------|-----------------------------------------------------------------------------|
-     | **Student → Enrollments**                   | One-to-Many                   | A student can be enrolled in multiple course offerings.                     |
-     | **Student → CourseOfferings**               | Many-to-Many (via Enrollments) | Students register for course offerings through the Enrollments table.       |
-     | **Student → Courses**                       | Many-to-Many (via CourseOfferings & Enrollments) | Students take courses indirectly through course offerings and enrollments. |
-     | **Student → Prerequisites (via Courses)**   | Indirect                      | Students must complete prerequisite courses before enrolling in some courses. |
-     | **Student → Instructors**                   | Indirect (via CourseOfferings) | Students are taught by instructors assigned to course offerings they enroll in. |
+     | Relationship                                | Type                          | Description                                                                       |
+|---------------------------------------------|-------------------------------|-----------------------------------------------------------------------------|
+| **Student → Enrollments**                   | One-to-Many                   | A student can be enrolled in multiple course offerings.                     |
+| **Student → CourseOfferings**               | Many-to-Many (via Enrollments) | Students register for course offerings through the Enrollments table.       |
+| **Student → Courses**                       | Many-to-Many (via CourseOfferings & Enrollments) | Students take courses indirectly through course offerings and enrollments. |
+| **Student → Prerequisites (via Courses)**   | Indirect                      | Students must complete prerequisite courses before enrolling in some courses. |
+| **Student → Instructors**                   | Indirect (via CourseOfferings) | Students are taught by instructors assigned to course offerings they enroll in. |
 
 - Data understanding
   To simulate a realistic environment for the Student Course Registration System, synthetic data was manually generated for each table. Each table contains 500 rows, designed to include various data quality challenges such as null values, empty cells, and duplicates, 
   which reflect real-world database inconsistencies and provide a solid foundation for data integrity enforcement and validation through SQL.
   Below is a breakdown of each table, its key attributes, and its structure:
 
-         | Table Name    | Number of Rows | Number of Columns  |  Key Columns                                                  |
-    |--------------------|----------------|--------------------|---------------------------------------------------------------|
-    | **Students**        | 500            | 7                  | StudentID, FirstName, LastName, Email, Phone, Major, Year    |
-    | **Courses**         | 500            | 5                  | CourseID, CourseCode, Title, Credits, Department             |
-    | **Instructors**     | 500            | 5                  | InstructorID, FirstName, LastName, Email, Department         |
-    | **CourseOfferings** | 500            | 5                  | OfferingID, CourseID, Semester, InstructorID, Schedule       |
-    | **Enrollments**     | 500            | 5                  | EnrollmentID, StudentID, OfferingID, EnrollmentDate, Grade   |
-    | **Prerequisites**   | 500            | 2                  | CourseID, PrerequisiteID                                     |
+  | Table Name       | Number of Rows | Number of Columns  |  Key Columns                                                  |
+|--------------------|----------------|--------------------|---------------------------------------------------------------|
+| **Students**        | 500            | 7                  | StudentID, FirstName, LastName, Email, Phone, Major, Year    |
+| **Courses**         | 500            | 5                  | CourseID, CourseCode, Title, Credits, Department             |
+| **Instructors**     | 500            | 5                  | InstructorID, FirstName, LastName, Email, Department         |
+| **CourseOfferings** | 500            | 5                  | OfferingID, CourseID, Semester, InstructorID, Schedule       |
+| **Enrollments**     | 500            | 5                  | EnrollmentID, StudentID, OfferingID, EnrollmentDate, Grade   |
+| **Prerequisites**   | 500            | 2                  | CourseID, PrerequisiteID                                     |
 
 
 ### 2.  Design an ERD (Entity-Relationship Diagram)
