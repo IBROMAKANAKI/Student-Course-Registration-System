@@ -1,7 +1,7 @@
 <p align="right">
   <img src="Student Course Registration System Report/Asset/Image/Datakirk logo.jpg" alt="Datakirk logo" width="150">
 </p>
-# SALAWUDEEN IBRAHIM
+<h1 align="center">**SALAWUDEEN IBRAHIM**</h1>
 
 <h2 align="center">Project Introduction</h2>
 
