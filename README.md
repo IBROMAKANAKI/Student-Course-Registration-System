@@ -12,6 +12,19 @@ To reflect real-world scenarios, the dataset includes **manually generated dummy
 ## 🎯 Aim
 To design and implement a robust relational database system that effectively manages student registrations, course offerings, instructor assignments, and academic performance, while simulating real-world data scenarios involving missing values, nulls, and duplicate records, using SQL for data modeling, manipulation, and analysis.
 
+## 🧩 Problem Statement
+Modern universities manage thousands of students, courses, instructors, and class enrollments each semester. Without a centralized system, tracking course offerings, managing student registrations, assigning instructors, and recording grades becomes inefficient and error-prone. This project aims to design and implement a relational database that addresses these challenges by providing a structured way to:
+
+- Store and manage student information.
+
+- Maintain a catalog of courses and prerequisites.
+
+- Track course offerings for each semester.
+
+- Record instructor assignments.
+
+- Handle student course registrations and grades.
+
 ## ✅ Objectives
 
 ### 1. Analyze the Problem Domain
@@ -90,6 +103,39 @@ To design and implement a robust relational database system that effectively man
 | **CourseOfferings** | 500            | 5                  | OfferingID, CourseID, Semester, InstructorID, Schedule       |
 | **Enrollments**     | 500            | 5                  | EnrollmentID, StudentID, OfferingID, EnrollmentDate, Grade   |
 | **Prerequisites**   | 500            | 2                  | CourseID, PrerequisiteID                                     |
+
+
+<div style="text-align: center;">
+  <h3>📊 Click Through the Tables</h3>
+  <p><em>Click the image to view the next table ➡️</em></p>
+
+  <img id="carousel" 
+       src="/assets/images/tables/Student.jpg" 
+       alt="Data Table" 
+       width="600" 
+       style="cursor: pointer; border: 2px solid #ccc; border-radius: 8px;" 
+       onclick="cycleImage()" />
+
+  <p style="margin-top: 10px;">🔁 <strong>Keep clicking to cycle through all images</strong></p>
+</div>
+
+<script>
+  const imagePaths = [
+    "/assets/images/tables/Student.jpg",
+    "/assets/images/tables/Course.jpg",
+    "/assets/images/tables/Instructor.jpg",
+    "/assets/images/tables/CourseOffering.jpg",
+    "/assets/images/tables/Enrollment.jpg",
+    "/assets/images/tables/Prerequites.jpg"
+  ];
+
+  let currentImageIndex = 0;
+
+  function cycleImage() {
+    currentImageIndex = (currentImageIndex + 1) % imagePaths.length;
+    document.getElementById("carousel").src = imagePaths[currentImageIndex];
+  }
+</script>
 
 
 ### 2.  Design an ERD (Entity-Relationship Diagram)
