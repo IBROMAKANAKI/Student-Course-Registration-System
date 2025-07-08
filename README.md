@@ -105,37 +105,12 @@ Modern universities manage thousands of students, courses, instructors, and clas
 | **Prerequisites**   | 500            | 2                  | CourseID, PrerequisiteID                                     |
 
 
-<div style="text-align: center;">
-  <h3>📊 Click Through the Tables</h3>
-  <p><em>Click the image to view the next table ➡️</em></p>
-
-  <img id="carousel" 
-       src="/assets/images/tables/Student.jpg" 
-       alt="Data Table" 
-       width="600" 
-       style="cursor: pointer; border: 2px solid #ccc; border-radius: 8px;" 
-       onclick="cycleImage()" />
-
-  <p style="margin-top: 10px;">🔁 <strong>Keep clicking to cycle through all images</strong></p>
-</div>
-
-<script>
-  const imagePaths = [
-    "Student Course Registration System Report/assets/images/tables/Student.jpg",
-    "Student Course Registration System Report/assets/images/tables/Course.jpg",
-    "Student Course Registration System Report/assets/images/tables/Instructor.jpg",
-    "Student Course Registration System Report/assets/images/tables/CourseOffering.jpg",
-    "Student Course Registration System Report/assets/images/tables/Enrollment.jpg",
-    "Student Course Registration System Report/assets/images/tables/Prerequites.jpg"
-  ];
-
-  let currentImageIndex = 0;
-
-  function cycleImage() {
-    currentImageIndex = (currentImageIndex + 1) % imagePaths.length;
-    document.getElementById("carousel").src = imagePaths[currentImageIndex];
-  }
-</script>
+![Excel Table for Student](Student Course Registration System Report/Asset/Image/Student.jpg)
+![Excel Table for Course](Student Course Registration System Report/Asset/Image/Course.jpg)
+![Excel Table for Instructor](Student Course Registration System Report/Asset/Image/Instructor.jpg)
+![Excel Table for CourseOffering](Student Course Registration System Report/Asset/Image/CourseOffering.jpg)
+![Excel Table for Enrollments](Student Course Registration System Report/Asset/Image/Enrollment.jpg)
+![Excel Table for Prerequisites](Student Course Registration System Report/Asset/Image/Prerequites.jpg)
 
 
 ### 2.  Design an ERD (Entity-Relationship Diagram)
