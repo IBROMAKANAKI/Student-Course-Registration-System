@@ -105,9 +105,38 @@ Modern universities manage thousands of students, courses, instructors, and clas
 | **Prerequisites**   | 500            | 2                  | CourseID, PrerequisiteID                                     |
 
 
-<sub>Click the image to view the next table</sub>
+<div style="text-align: center;">
+  <h3>📊 Click Through the Tables</h3>
+  <p><em>Click the image to view the next table ➡️</em></p>
 
-<div align="center"> <details> <summary>📸 Click here to cycle through the data table images</summary> <img src="Student Course Registration System Report/Asset/Image/Student.jpg" width="600" alt="Excel Table for Student" onclick="this.src='Student Course Registration System Report/Asset/Image/Course.jpg'"> <img src="Student Course Registration System Report/Asset/Image/Course.jpg" width="600" alt="Excel Table for Course" hidden> <img src="Student Course Registration System Report/Asset/Image/Instructor.jpg" width="600" alt="Excel Table for Instructor" hidden> <img src="Student Course Registration System Report/Asset/Image/CourseOffering.jpg" width="600" alt="Excel Table for CourseOffering" hidden> <img src="Student Course Registration System Report/Asset/Image/Enrollment.jpg" width="600" alt="Excel Table for Enrollment" hidden> <img src="Student Course Registration System Report/Asset/Image/Prerequites.jpg" width="600" alt="Excel Table for Prerequisites" hidden> <p><strong>🔁 Click images above to cycle through all data tables</strong></p> </details> </div>
+  <img id="carousel" 
+       src="/assets/images/tables/Student.jpg" 
+       alt="Data Table" 
+       width="600" 
+       style="cursor: pointer; border: 2px solid #ccc; border-radius: 8px;" 
+       onclick="cycleImage()" />
+
+  <p style="margin-top: 10px;">🔁 <strong>Keep clicking to cycle through all images</strong></p>
+</div>
+
+<script>
+  const imagePaths = [
+    "Student Course Registration System Report/Asset/Image/Student.jpg",
+    "Student Course Registration System Report/Asset/Image/Course.jpg",
+    "Student Course Registration System Report/Asset/Image/Instructor.jpg",
+    "Student Course Registration System Report/Asset/Image/CourseOffering.jpg", 
+    "Student Course Registration System Report/Asset/Image/Enrollment.jpg",
+    "Student Course Registration System Report/Asset/Image/Prerequites.jpg"
+  ];
+
+  let currentImageIndex = 0;
+
+  function cycleImage() {
+    currentImageIndex = (currentImageIndex + 1) % imagePaths.length;
+    document.getElementById("carousel").src = imagePaths[currentImageIndex];
+  }
+</script>
+
 
 
 ### 2.  Design an ERD (Entity-Relationship Diagram)
