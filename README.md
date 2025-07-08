@@ -1,7 +1,7 @@
 <p align="right">
   <img src="Student Course Registration System Report/Asset/Image/Datakirk logo.jpg" alt="Datakirk logo" width="150">
 </p>
-<h1 align="center">**SALAWUDEEN IBRAHIM**</h1>
+<h1 align="center">SALAWUDEEN IBRAHIM</h1>
 
 <h2 align="center">Project Introduction</h2>
 
@@ -17,6 +17,72 @@ To design and implement a robust relational database system that effectively man
 ### 1. Analyze the Problem Domain
 
 - Identify key entities (e.g., Students, Courses, Enrollments) and define their relationships and data requirements.
+  
+  | Entity              | Description                                                        | Key Attributes                                         |
+| ------------------- | ------------------------------------------------------------------ | ------------------------------------------------------ |
+| **Students**        | Individuals who enroll in the university and register for courses. | StudentID, FirstName, LastName, Email, Major, Year     |
+| **Courses**         | Abstract course definitions offered by departments.                | CourseID, CourseCode, Title, Credits, Department       |
+| **Instructors**     | Faculty members responsible for teaching courses.                  | InstructorID, FirstName, LastName, Email, Department   |
+| **CourseOfferings** | Specific instances of courses taught in a semester.                | OfferingID, CourseID, Semester, InstructorID, Schedule |
+| **Enrollments**     | Records of students registering for specific course offerings.     | EnrollmentID, StudentID, OfferingID, Grade, Date       |
+| **Prerequisites**   | Courses that must be completed before enrolling in another course. | CourseID, PrerequisiteID                               |
+
+  1. Students ↔ Enrollments
+     Type: One-to-Many
+     Explanation: A single student can enroll in multiple course offerings, but each enrollment record refers to only one student.
+     Implementation: StudentID in Enrollments is a foreign key referencing Students.
+
+  2. Courses ↔ CourseOfferings
+     Type: One-to-Many
+     Explanation: Each course can be offered in different semesters (e.g., CS101 may be offered in Fall and Spring).
+     Implementation: CourseID in CourseOfferings is a foreign key referencing Courses.
+
+  3. Instructors ↔ CourseOfferings
+     Type: One-to-Many
+     Explanation: One instructor can teach multiple course offerings.
+     Implementation: InstructorID in CourseOfferings is a foreign key referencing Instructors.
+
+  4. CourseOfferings ↔ Enrollments
+     Type: One-to-Many
+     Explanation: A course offering can have many students enrolled, but each enrollment belongs to only one offering.
+     Implementation: OfferingID in Enrollments is a foreign key referencing CourseOfferings.
+
+  5. Courses ↔ Prerequisites
+     Type: Many-to-Many (Self-Referencing)
+     Explanation: A course can have multiple prerequisites, and a course can be a prerequisite for multiple other courses.
+     Implementation: Prerequisites table acts as a bridge with composite keys CourseID and PrerequisiteID.
+
+           | Relationship                     | Type         |
+     | ---------------------------------- | ------------ |
+     | **Student → Enrollments**              | One-to-Many  |
+     | **Course → CourseOfferings **          | One-to-Many  |
+     | **Instructor → CourseOfferings**       | One-to-Many  |
+     | **CourseOffering → Enrollments**       | One-to-Many  |
+     | ** Course ↔ Prerequisites (Self-join)** | Many-to-Many |
+
+   
+                 | Relationship                                | Type                          | Description                                                                       |
+     |---------------------------------------------|-------------------------------|-----------------------------------------------------------------------------|
+     | **Student → Enrollments**                   | One-to-Many                   | A student can be enrolled in multiple course offerings.                     |
+     | **Student → CourseOfferings**               | Many-to-Many (via Enrollments) | Students register for course offerings through the Enrollments table.       |
+     | **Student → Courses**                       | Many-to-Many (via CourseOfferings & Enrollments) | Students take courses indirectly through course offerings and enrollments. |
+     | **Student → Prerequisites (via Courses)**   | Indirect                      | Students must complete prerequisite courses before enrolling in some courses. |
+     | **Student → Instructors**                   | Indirect (via CourseOfferings) | Students are taught by instructors assigned to course offerings they enroll in. |
+
+- Data understanding
+  To simulate a realistic environment for the Student Course Registration System, synthetic data was manually generated for each table. Each table contains 500 rows, designed to include various data quality challenges such as null values, empty cells, and duplicates, 
+  which reflect real-world database inconsistencies and provide a solid foundation for data integrity enforcement and validation through SQL.
+  Below is a breakdown of each table, its key attributes, and its structure:
+
+         | Table Name    | Number of Rows | Number of Columns  |  Key Columns                                                  |
+    |--------------------|----------------|--------------------|---------------------------------------------------------------|
+    | **Students**        | 500            | 7                  | StudentID, FirstName, LastName, Email, Phone, Major, Year    |
+    | **Courses**         | 500            | 5                  | CourseID, CourseCode, Title, Credits, Department             |
+    | **Instructors**     | 500            | 5                  | InstructorID, FirstName, LastName, Email, Department         |
+    | **CourseOfferings** | 500            | 5                  | OfferingID, CourseID, Semester, InstructorID, Schedule       |
+    | **Enrollments**     | 500            | 5                  | EnrollmentID, StudentID, OfferingID, EnrollmentDate, Grade   |
+    | **Prerequisites**   | 500            | 2                  | CourseID, PrerequisiteID                                     |
+
 
 ### 2.  Design an ERD (Entity-Relationship Diagram)
 
@@ -63,4 +129,52 @@ To design and implement a robust relational database system that effectively man
 ### 8. Reflect on Data Cleaning Needs
 
 - Use SQL to identify and potentially isolate records that need cleaning or manual correction.
+
+## 9. Scope of the Project
+
+- Includes: Student registration, course enrollment, instructor assignment, grade recording.
+
+- Excludes: Payment processing, learning content delivery, real-time notifications.
+
+## 10. Methodology
+For this SQL project, this include:
+
+- Schema design using ER diagrams
+
+- SQL implementation (CREATE, INSERT, SELECT, etc.)
+
+- Manual data generation (including nulls, duplicates)
+
+- Query writing for analysis
+
+## 11. System Design / Architecture
+
+- ERD (Entity Relationship Diagram)
+
+- Normalization process
+
+- Table relationships and structure
+
+## 12. Challenges and Limitations
+
+- Manually generating realistic data
+
+- Handling large CSV imports with null/duplicate values
+
+## 13. Results / Output Samples
+Show some SQL query outputs, insights gathered from the analysis, or screenshots (optional).
+
+## 14. Conclusion
+Summarize what you achieved, what went well, and what could be improved.
+
+## 15. Future Work / Recommendations
+
+- Integrate with front-end UI
+
+- Add stored procedures and triggers
+
+- Real-time dashboard using BI tools
+
+
+
 
