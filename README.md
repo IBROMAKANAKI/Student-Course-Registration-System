@@ -121,12 +121,12 @@ Modern universities manage thousands of students, courses, instructors, and clas
 
 <script>
   const imagePaths = [
-    "/assets/images/tables/Student.jpg",
-    "/assets/images/tables/Course.jpg",
-    "/assets/images/tables/Instructor.jpg",
-    "/assets/images/tables/CourseOffering.jpg",
-    "/assets/images/tables/Enrollment.jpg",
-    "/assets/images/tables/Prerequites.jpg"
+    "Student Course Registration System Report/assets/images/tables/Student.jpg",
+    "Student Course Registration System Report/assets/images/tables/Course.jpg",
+    "Student Course Registration System Report/assets/images/tables/Instructor.jpg",
+    "Student Course Registration System Report/assets/images/tables/CourseOffering.jpg",
+    "Student Course Registration System Report/assets/images/tables/Enrollment.jpg",
+    "Student Course Registration System Report/assets/images/tables/Prerequites.jpg"
   ];
 
   let currentImageIndex = 0;
