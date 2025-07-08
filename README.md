@@ -88,14 +88,13 @@ Modern universities manage thousands of students, courses, instructors, and clas
 
      
 
-   
-     | Relationship                                | Type                          | Description                                                                       |
-|---------------------------------------------|-------------------------------|-----------------------------------------------------------------------------|
-| **Student → Enrollments**                   | One-to-Many                   | A student can be enrolled in multiple course offerings.                     |
-| **Student → CourseOfferings**               | Many-to-Many (via Enrollments) | Students register for course offerings through the Enrollments table.       |
-| **Student → Courses**                       | Many-to-Many (via CourseOfferings & Enrollments) | Students take courses indirectly through course offerings and enrollments. |
-| **Student → Prerequisites (via Courses)**   | Indirect                      | Students must complete prerequisite courses before enrolling in some courses. |
-| **Student → Instructors**                   | Indirect (via CourseOfferings) | Students are taught by instructors assigned to course offerings they enroll in. |
+                    | Relationship            |                      Type                        |                   | Description                                                 |
+|---------------------------------------------|--------------------------------------------------|---------------------------------------------------------------------------------|
+| **Student → Enrollments**                   | One-to-Many                                      | A student can be enrolled in multiple course offerings.                         |
+| **Student → CourseOfferings**               | Many-to-Many (via Enrollments)                   | Students register for course offerings through the Enrollments table.           |
+| **Student → Courses**                       | Many-to-Many (via CourseOfferings & Enrollments) | Students take courses indirectly through course offerings and enrollments.      |
+| **Student → Prerequisites (via Courses)**   | Indirect                                         | Students must complete prerequisite courses before enrolling in some courses.   |
+| **Student → Instructors**                   | Indirect (via CourseOfferings)                   | Students are taught by instructors assigned to course offerings they enroll in. |
 
 
 - **Data understanding**
@@ -206,17 +205,24 @@ An extension of star schema where dimension tables are normalized into multiple 
 
 <div style="text-align: center; font-family: monospace; white-space: pre;">
 
-  [Departments]
-           /        \
-      [Courses]   [Instructors]
-           \          /
-         [CourseOfferings]
-               |
-           [Enrollments]
-               |
-           [Students]
-               |
-            [Majors]
+  [Students]         [Instructors]         [Courses]
+    |                   |                    |
+    |                   |                    |
+    |                   |                    |
+    |                   |                    |
+[Enrollments]     [CourseOfferings] <--------/
+       \               /
+        \             /
+         \           /
+          \         /
+           \       /
+            \     /
+             [Courses]
+                 ^
+                 |
+                 v
+   [Prerequisites (Self-Referencing)]
+
 
 </div>
 
