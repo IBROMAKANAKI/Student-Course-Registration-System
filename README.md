@@ -16,7 +16,7 @@ To design and implement a robust relational database system that effectively man
 
 ### 1. Analyze the Problem Domain
 
-- Identify key entities (e.g., Students, Courses, Enrollments) and define their relationships and data requirements.
+- **Identify key entities (e.g., Students, Courses, Enrollments) and define their relationships and data requirements.**
   
   | Entity              | Description                                                        | Key Attributes                                         |
 | ------------------- | ------------------------------------------------------------------ | ------------------------------------------------------ |
@@ -26,6 +26,7 @@ To design and implement a robust relational database system that effectively man
 | **CourseOfferings** | Specific instances of courses taught in a semester.                | OfferingID, CourseID, Semester, InstructorID, Schedule |
 | **Enrollments**     | Records of students registering for specific course offerings.     | EnrollmentID, StudentID, OfferingID, Grade, Date       |
 | **Prerequisites**   | Courses that must be completed before enrolling in another course. | CourseID, PrerequisiteID                               |
+
 
 
   1. Students ↔ Enrollments
@@ -73,10 +74,13 @@ To design and implement a robust relational database system that effectively man
 | **Student → Prerequisites (via Courses)**   | Indirect                      | Students must complete prerequisite courses before enrolling in some courses. |
 | **Student → Instructors**                   | Indirect (via CourseOfferings) | Students are taught by instructors assigned to course offerings they enroll in. |
 
-- Data understanding
+
+- **Data understanding**
+  
   To simulate a realistic environment for the Student Course Registration System, synthetic data was manually generated for each table. Each table contains 500 rows, designed to include various data quality challenges such as null values, empty cells, and duplicates, 
   which reflect real-world database inconsistencies and provide a solid foundation for data integrity enforcement and validation through SQL.
   Below is a breakdown of each table, its key attributes, and its structure:
+  
 
   | Table Name       | Number of Rows | Number of Columns  |  Key Columns                                                  |
 |--------------------|----------------|--------------------|---------------------------------------------------------------|
