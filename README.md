@@ -105,10 +105,26 @@ Modern universities manage thousands of students, courses, instructors, and clas
 | **Prerequisites**   | 500            | 2                  | CourseID, PrerequisiteID                                     |
 
 
-<div style="text-align: center;">
+<div style="text-align: center; position: relative; display: inline-block;">
+
   <h3>📊 Click Through the Tables</h3>
   <p><em>Click the image to view the next table ➡️</em></p>
 
+  <!-- Data icon badge -->
+  <div style="
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 18px;
+      font-weight: bold;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+    📋 Data Table
+  </div>
+
+  <!-- Image Carousel -->
   <img id="carousel" 
        src="/assets/images/tables/Student.jpg" 
        alt="Data Table" 
@@ -129,7 +145,7 @@ Modern universities manage thousands of students, courses, instructors, and clas
     "Student Course Registration System Report/Asset/Image/Prerequites.jpg"
   ];
 
-  let currentImageIndex = 0;
+ let currentImageIndex = 0;
 
   function cycleImage() {
     currentImageIndex = (currentImageIndex + 1) % imagePaths.length;
