@@ -178,12 +178,17 @@ The central fact table connects directly to multiple denormalized dimension tabl
 **Note** All dimensions link directly to the fact table, and dimension tables are denormalized, meaning no further normalization (splitting) inside dimensions.
 
 
-                [Students]
-                   |
-                   |
+<div style="text-align: center; font-family: monospace; white-space: pre;">
+
+         [Students]
+               |
+               |
 [Instructors] — [Enrollments] — [Courses]
-                   |
-               [CourseOfferings]
+               |
+           [CourseOfferings]
+
+</div>
+
 
 
 #### Snowflake Schema
@@ -198,7 +203,10 @@ An extension of star schema where dimension tables are normalized into multiple 
 
 - CourseOfferings could link to Semesters as a separate table
 
-        [Departments]
+
+<div style="text-align: center; font-family: monospace; white-space: pre;">
+
+  [Departments]
            /        \
       [Courses]   [Instructors]
            \          /
@@ -210,28 +218,30 @@ An extension of star schema where dimension tables are normalized into multiple 
                |
             [Majors]
 
+</div>
 
 
+<div style="text-align: center;">
+  <img src="Student Course Registration System Report/Asset/Image/Diagram.jpg" alt="ERD DIAGRAM" style="max-width: 80%; height: auto;" />
+</div>
 
-[Students]         [Instructors]         [Courses]
-    |                   |                    |
-    |                   |                    |
-    |                   |                    |
-    |                   |                    |
-[Enrollments]     [CourseOfferings] <--------/
-       \               /
-        \             /
-         \           /
-          \         /
-           \       /
-            \     /
-             [Courses]
-                 ^
-                 |
-                 v
-   [Prerequisites (Self-Referencing)]
 
-![ERD DIAGRAM](Student Course Registration System Report/Asset/Image/Diagram.jpg)
+<div style="text-align: center; font-family: monospace; white-space: pre; margin-top: 20px;">
+
+    [Departments]
+       /        \
+  [Courses]   [Instructors]
+       \          /
+     [CourseOfferings]
+           |
+       [Enrollments]
+           |
+       [Students]
+           |
+      [Prerequisites]
+
+</div>
+
    
 ### 3. Implement the Relational Schema in SQL
 
