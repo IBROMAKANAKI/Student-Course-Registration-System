@@ -76,6 +76,16 @@ Modern universities manage thousands of students, courses, instructors, and clas
 | **CourseOffering → Enrollments**       | One-to-Many  |
 | **Course ↔ Prerequisites (Self-join)** | Many-to-Many |
 
+
+| Relationship                     | Cardinality | Description                                                   |
+| -------------------------------- | ----------- | ------------------------------------------------------------- |
+| **Student → Enrollments**        | 1 : Many    | One student can enroll in many course offerings               |
+| **Course → CourseOfferings**     | 1 : Many    | One course can have many offerings                            |
+| **Instructor → CourseOfferings** | 1 : Many    | One instructor can teach multiple offerings                   |
+| **CourseOffering → Enrollments** | 1 : Many    | Each offering has many students                               |
+| **Course ↔ Prerequisites**       | Many : Many | A course can have multiple prerequisites (self-join)          |
+| **Student ↔ Course (indirect)**  | Many : Many | Students register for courses through offerings + enrollments |
+
      
 
    
@@ -157,8 +167,72 @@ Modern universities manage thousands of students, courses, instructors, and clas
 
 ### 2.  Design an ERD (Entity-Relationship Diagram)
 
-- Create a logical model representing how the entities interact, including one-to-many and many-to-many relationships.
+#### Star Schema
 
+The central fact table connects directly to multiple denormalized dimension tables. Dimension tables have redundant data but simplify queries with fewer joins while using Star Schema. use If the focus is on fast querying and reporting (like analyzing student enrollments, grades, course offerings), and simpler, flatter tables.
+
+- Fact Table: Enrollments (records each registration with facts like Grade, EnrollmentDate)
+
+- Dimension Tables: Students, Courses, Instructors, CourseOfferings, and Prerequites
+
+**Note** All dimensions link directly to the fact table, and dimension tables are denormalized, meaning no further normalization (splitting) inside dimensions.
+
+
+                [Students]
+                   |
+                   |
+[Instructors] — [Enrollments] — [Courses]
+                   |
+               [CourseOfferings]
+
+
+#### Snowflake Schema
+
+An extension of star schema where dimension tables are normalized into multiple related tables, reducing redundancy but increasing complexity and join operations. use If a more normalized structure to save storage space or maintain data integrity is needed, especially when dimension attributes have hierarchical relationships.
+
+- Courses split into Courses and Departments (department becomes a separate table linked to Courses)
+
+- Students may link to Majors table rather than storing major info directly
+
+- Instructors linked to Departments similarly
+
+- CourseOfferings could link to Semesters as a separate table
+
+        [Departments]
+           /        \
+      [Courses]   [Instructors]
+           \          /
+         [CourseOfferings]
+               |
+           [Enrollments]
+               |
+           [Students]
+               |
+            [Majors]
+
+
+
+
+[Students]         [Instructors]         [Courses]
+    |                   |                    |
+    |                   |                    |
+    |                   |                    |
+    |                   |                    |
+[Enrollments]     [CourseOfferings] <--------/
+       \               /
+        \             /
+         \           /
+          \         /
+           \       /
+            \     /
+             [Courses]
+                 ^
+                 |
+                 v
+   [Prerequisites (Self-Referencing)]
+
+![ERD DIAGRAM](Student Course Registration System Report/Asset/Image/Diagram.jpg)
+   
 ### 3. Implement the Relational Schema in SQL
 
 - Write CREATE TABLE scripts with appropriate data types, primary keys, foreign keys, and constraints (e.g., UNIQUE, CHECK).
