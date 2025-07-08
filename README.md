@@ -84,13 +84,8 @@ Modern universities manage thousands of students, courses, instructors, and clas
 | **Instructor → CourseOfferings** | 1 : Many    | One instructor can teach multiple offerings                   |
 | **CourseOffering → Enrollments** | 1 : Many    | Each offering has many students                               |
 | **Course ↔ Prerequisites**       | Many : Many | A course can have multiple prerequisites (self-join)          |
-| **Student ↔ Course (indirect)**  | Many : Many | Students register for courses through offerings + enrollments |
+| **Student ↔ Course (indirect)**  | Many : Many | Students register for courses through offerings + enrollments |                
 
-     
-
-                    | Relationship            |                      Type                        |                   | Description                                                 |
-|---------------------------------------------|--------------------------------------------------|---------------------------------------------------------------------------------|
-| **Student → Enrollments**                   | One-to-Many                                      | A student can be enrolled in multiple course offerings.                         |
 | **Student → CourseOfferings**               | Many-to-Many (via Enrollments)                   | Students register for course offerings through the Enrollments table.           |
 | **Student → Courses**                       | Many-to-Many (via CourseOfferings & Enrollments) | Students take courses indirectly through course offerings and enrollments.      |
 | **Student → Prerequisites (via Courses)**   | Indirect                                         | Students must complete prerequisite courses before enrolling in some courses.   |
@@ -202,6 +197,27 @@ An extension of star schema where dimension tables are normalized into multiple 
 
 - CourseOfferings could link to Semesters as a separate table
 
+<div style="text-align: center; font-family: monospace; white-space: pre; margin-top: 20px;">
+
+    [Departments]
+       /        \
+  [Courses]   [Instructors]
+       \          /
+     [CourseOfferings]
+           |
+       [Enrollments]
+           |
+       [Students]
+           |
+      [Prerequisites]
+
+</div>
+
+
+<div style="text-align: center;">
+  <img src="Student Course Registration System Report/Asset/Image/Diagram.jpg" alt="ERD DIAGRAM" style="max-width: 80%; height: auto;" />
+</div>
+
 
 <div style="text-align: center; font-family: monospace; white-space: pre;">
 
@@ -223,28 +239,6 @@ An extension of star schema where dimension tables are normalized into multiple 
                  v
    [Prerequisites (Self-Referencing)]
 
-
-</div>
-
-
-<div style="text-align: center;">
-  <img src="Student Course Registration System Report/Asset/Image/Diagram.jpg" alt="ERD DIAGRAM" style="max-width: 80%; height: auto;" />
-</div>
-
-
-<div style="text-align: center; font-family: monospace; white-space: pre; margin-top: 20px;">
-
-    [Departments]
-       /        \
-  [Courses]   [Instructors]
-       \          /
-     [CourseOfferings]
-           |
-       [Enrollments]
-           |
-       [Students]
-           |
-      [Prerequisites]
 
 </div>
 
