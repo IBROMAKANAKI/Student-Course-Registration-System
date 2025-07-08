@@ -105,12 +105,9 @@ Modern universities manage thousands of students, courses, instructors, and clas
 | **Prerequisites**   | 500            | 2                  | CourseID, PrerequisiteID                                     |
 
 
-![Excel Table for Student](Student Course Registration System Report/Asset/Image/Student.jpg)
-![Excel Table for Course](Student Course Registration System Report/Asset/Image/Course.jpg)
-![Excel Table for Instructor](Student Course Registration System Report/Asset/Image/Instructor.jpg)
-![Excel Table for CourseOffering](Student Course Registration System Report/Asset/Image/CourseOffering.jpg)
-![Excel Table for Enrollments](Student Course Registration System Report/Asset/Image/Enrollment.jpg)
-![Excel Table for Prerequisites](Student Course Registration System Report/Asset/Image/Prerequites.jpg)
+<sub>Click the image to view the next table</sub>
+
+<div align="center"> <details> <summary>📸 Click here to cycle through the data table images</summary> <img src="Student Course Registration System Report/Asset/Image/Student.jpg" width="600" alt="Excel Table for Student" onclick="this.src='Student Course Registration System Report/Asset/Image/Course.jpg'"> <img src="Student Course Registration System Report/Asset/Image/Course.jpg" width="600" alt="Excel Table for Course" hidden> <img src="Student Course Registration System Report/Asset/Image/Instructor.jpg" width="600" alt="Excel Table for Instructor" hidden> <img src="Student Course Registration System Report/Asset/Image/CourseOffering.jpg" width="600" alt="Excel Table for CourseOffering" hidden> <img src="Student Course Registration System Report/Asset/Image/Enrollment.jpg" width="600" alt="Excel Table for Enrollment" hidden> <img src="Student Course Registration System Report/Asset/Image/Prerequites.jpg" width="600" alt="Excel Table for Prerequisites" hidden> <p><strong>🔁 Click images above to cycle through all data tables</strong></p> </details> </div>
 
 
 ### 2.  Design an ERD (Entity-Relationship Diagram)
