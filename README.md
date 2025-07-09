@@ -157,8 +157,6 @@ Modern universities manage thousands of students, courses, instructors, and clas
   }
 </script>
 
-
-
 ### 2.  Design an ERD (Entity-Relationship Diagram)
 
 #### Star Schema
@@ -244,8 +242,103 @@ An extension of star schema where dimension tables are normalized into multiple 
 
    
 ### 3. Implement the Relational Schema in SQL
+A **database** is a structured collection of data stored in a way that makes it easy to retrieve, manage, and update. For example, a University Database might store data about students, courses, instructors, and enrollments. to Implement the Relational Schema in SQL a **database** needs to be create, then use then a table can be created.
 
-- Write CREATE TABLE scripts with appropriate data types, primary keys, foreign keys, and constraints (e.g., UNIQUE, CHECK).
+- Create database
+
+'''sql
+Create database STUDENT_REG;
+Use STUDENT_REG;
+'''
+**Code: Create data base**
+
+A **table** is a fundamental unit within a database that organises data into rows and columns, much like a spreadsheet. Each table usually stores one type of data.
+
+- Create table
+
+'''sql
+-- a) Students Table
+CREATE TABLE Students (
+    StudentID INT PRIMARY KEY,
+    FirstName NVARCHAR(50),
+    LastName NVARCHAR(50),
+    Email NVARCHAR(100),
+    Phone NVARCHAR(20),
+    Major NVARCHAR(100),
+    Year NVARCHAR(20) CHECK (Year IN ('Year 1', 'Year 2', 'Year 3', 'Year 4'))
+);
+
+-- b) Courses Table
+CREATE TABLE Courses (
+    CourseID INT PRIMARY KEY,
+    CourseCode NVARCHAR(15),
+    Title NVARCHAR(150),
+    Credits INT CHECK (Credits > 0),
+    Department NVARCHAR(150)
+);
+
+-- c) Instructors Table
+CREATE TABLE Instructors (
+    InstructorID INT PRIMARY KEY,
+    FirstName NVARCHAR(50),
+    LastName NVARCHAR(50),
+    Email NVARCHAR(100),
+    Department NVARCHAR(150)
+);
+
+-- d) CourseOfferings Table
+CREATE TABLE CourseOfferings (
+    OfferingID INT PRIMARY KEY,
+    CourseID INT,
+    Semester NVARCHAR(50),
+    InstructorID INT,
+    Schedule NVARCHAR(50),
+    FOREIGN KEY (CourseID) REFERENCES Courses(CourseID),
+    FOREIGN KEY (InstructorID) REFERENCES Instructors(InstructorID)
+);
+
+-- e) Enrollments Table
+CREATE TABLE Enrollments (
+    EnrollmentID INT PRIMARY KEY,
+    StudentID INT,
+    OfferingID INT,
+    EnrollmentDate DATE,
+    Grade CHAR(1) CHECK (Grade IN ('A', 'B', 'C', 'D', 'F') OR Grade IS NULL),
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
+    FOREIGN KEY (OfferingID) REFERENCES CourseOfferings(OfferingID)
+);
+
+-- f) Prerequisites Table
+CREATE TABLE Prerequisites (
+    CourseID INT,
+    PrerequisiteID INT,
+    PRIMARY KEY (CourseID, PrerequisiteID),
+    FOREIGN KEY (CourseID) REFERENCES Courses(CourseID),
+    FOREIGN KEY (PrerequisiteID) REFERENCES Courses(CourseID)
+);
+
+'''
+
+![Create table](Student Course Registration System Report/Asset/Image/table.jpg)
+
+**Note**: PRIMARY KEY: This ensures that each StudentID is unique and not null.  
+NVARCHAR(50): means it can store up to 50 Unicode characters, supporting different languages and characters (e.g., accented letters).
+FOREIGN KEY: A FOREIGN KEY is a constraint in SQL that creates a relationship between two tables. It ensures referential integrity
+
+- View table
+
+'''sql
+Select * from Students;
+Select * from Courses;
+Select * from CourseOfferings;
+Select * from Instructors;
+Select * from Enrollments;
+Select * from Prerequisites;
+'''
+
+![View Table](Student Course Registration System Report/Asset/Image/table view.jpg)
+
+
 
 ### 4. Simulate Real-World Data Challenges
 
