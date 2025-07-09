@@ -246,17 +246,17 @@ A **database** is a structured collection of data stored in a way that makes it 
 
 - Create database
 
-'''sql
+```sql
 Create database STUDENT_REG;
 Use STUDENT_REG;
-'''
+```
 **Code: Create data base**
 
 A **table** is a fundamental unit within a database that organises data into rows and columns, much like a spreadsheet. Each table usually stores one type of data.
 
-- Create table
+- **Create table**
 
-'''sql
+```sql
 -- a) Students Table
 CREATE TABLE Students (
     StudentID INT PRIMARY KEY,
@@ -317,7 +317,7 @@ CREATE TABLE Prerequisites (
     FOREIGN KEY (PrerequisiteID) REFERENCES Courses(CourseID)
 );
 
-'''
+```
 
 ![Create table](Student Course Registration System Report/Asset/Image/table.jpg)
 
@@ -325,18 +325,134 @@ CREATE TABLE Prerequisites (
 NVARCHAR(50): means it can store up to 50 Unicode characters, supporting different languages and characters (e.g., accented letters).
 FOREIGN KEY: A FOREIGN KEY is a constraint in SQL that creates a relationship between two tables. It ensures referential integrity
 
-- View table
+- **View table**
 
-'''sql
+```sql
 Select * from Students;
 Select * from Courses;
 Select * from CourseOfferings;
 Select * from Instructors;
 Select * from Enrollments;
 Select * from Prerequisites;
-'''
+```
 
 ![View Table](Student Course Registration System Report/Asset/Image/table view.jpg)
+
+- **Insert data to table**
+
+```sql
+
+---Student----
+
+BULK INSERT Students
+FROM "C:\Users\hp\Downloads\Students (1).csv"
+WITH (
+    FIRSTROW = 2,
+    FIELDTERMINATOR = ',',
+    ROWTERMINATOR = '0x0a', -- Unix-style line endings
+    TABLOCK,
+    KEEPNULLS,
+    CODEPAGE = '65001' -- Handles UTF-8
+);
+
+----Course------
+
+BULK INSERT Courses
+FROM "C:\Users\hp\Downloads\Courses (1).csv"
+WITH (
+    FIRSTROW = 2,
+    FIELDTERMINATOR = ',',
+    ROWTERMINATOR = '0x0a', -- Unix-style line endings
+    TABLOCK,
+    KEEPNULLS,
+    CODEPAGE = '65001' -- Handles UTF-8
+);
+
+-----Instructor---
+
+BULK INSERT Instructors
+FROM "C:\Users\hp\Downloads\Instructors (1).csv"
+WITH (
+    FIRSTROW = 2,
+    FIELDTERMINATOR = ',',
+    ROWTERMINATOR = '0x0a', -- Unix-style line endings
+    TABLOCK,
+    KEEPNULLS,
+    CODEPAGE = '65001' -- Handles UTF-8
+);
+
+
+------CourseOfferings----
+
+BULK INSERT CourseOfferings
+FROM "C:\Users\hp\Downloads\CourseOfferings (1).csv"
+WITH (
+    FIRSTROW = 2,
+    FIELDTERMINATOR = ',',
+    ROWTERMINATOR = '0x0a', -- Unix-style line endings
+    TABLOCK,
+    KEEPNULLS,
+    CODEPAGE = '65001' -- Handles UTF-8
+);
+
+-----Enrollments----
+
+BULK INSERT Enrollments
+FROM "C:\Users\hp\Downloads\Enrollments (1).csv"
+WITH (
+    FIRSTROW = 2,
+    FIELDTERMINATOR = ',',
+    ROWTERMINATOR = '0x0a', -- Unix-style line endings
+    TABLOCK,
+    KEEPNULLS,
+    CODEPAGE = '65001' -- Handles UTF-8
+);
+
+----Prerequisites------
+
+
+BULK INSERT Prerequisites
+FROM "C:\Users\hp\Downloads\Prerequisites (1).csv"
+WITH (
+    FIRSTROW = 2,
+    FIELDTERMINATOR = ',',
+    ROWTERMINATOR = '0x0a', -- Unix-style line endings
+    TABLOCK,
+    KEEPNULLS,
+    CODEPAGE = '65001' -- Handles UTF-8
+);
+
+```
+
+**BULK INSERT Students**: This command instructs SQL Server to import data from an external file into the Students table.
+
+**FROM "C:\Users\hp\Downloads\Students (1).csv"**: Specifies the path to the CSV file importing from the computer
+
+**FIRSTROW = 2** : Tells SQL Server to start reading from the second row. The first row is typically a header row (column names), which you needs to skip.
+
+**FIELDTERMINATOR = ','**: Specifies that columns are separated by commas (CSV = Comma Separated Values).
+
+**ROWTERMINATOR = '0x0a'**: This defines how each row ends. 0x0a is the Unix-style line break (Line Feed \n).
+
+**TABLOCK**: Improves performance by locking the table during the insert operation. Recommended for large imports.
+
+**KEEPNULLS**: If a field in the file is empty, it inserts SQL NULL instead of default values.
+
+**CODEPAGE = '65001'**: Specifies that the file is in UTF-8 encoding. This is necessary if the CSV contains non-English characters, emojis, or accented letters.
+
+- **Verify data insertion**
+
+```sql
+SELECT TOP 3 * FROM Students;
+SELECT TOP 3 * FROM Courses;
+SELECT TOP 3 * FROM CourseOfferings;
+SELECT TOP 3 * FROM Instructors;
+SELECT TOP 3 * FROM Enrollments;
+SELECT TOP 3 * FROM Prerequisites;
+```
+**This code shows the first three line in each table**
+
+![Top 3 data table](Student Course Registration System Report/Asset/Image/Top 3.jpg)
 
 
 
