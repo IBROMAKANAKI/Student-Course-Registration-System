@@ -254,7 +254,7 @@ Use STUDENT_REG;
 
 A **table** is a fundamental unit within a database that organises data into rows and columns, much like a spreadsheet. Each table usually stores one type of data.
 
-#### 2. Create table**
+#### 2. Create table
 
 ```sql
 -- a) Students Table
@@ -719,7 +719,64 @@ FROM Prerequisites;
 
 ### 5. Inconsistent or edge-case values (e.g., invalid grades, blank emails)
 
-- Ensure Data Integrity and Validation
+#### Data cleaning
+Data cleaning means fixing or removing incorrect, messy, or missing data.
+
+##### a. Data Cleaning Description
+
+In the CourseOfferings table, there are 113 missing values in the Schedule column. These missing entries are filled based on the Semester:
+
+If the semester is Fall, replace the missing schedule with:
+➤ "Tue/Thu 11:00-12:30,202,2025"
+
+If the semester is Summer, replace it with:
+➤ "Mon 13:00-14:30,303,2023"
+
+If the semester is Spring, replace it with:
+➤ "Mon 13:00-14:30,303,2023"
+
+In the Enrollments table, there are 88 missing values in the Grade column. All missing grades are replaced with:
+➤ "B"
+
+In the Students table:
+
+110 rows have missing values in the Major column. These are filled with either:
+➤ "Physics" or "Math" (assigned randomly)
+
+124 rows have missing values in the Phone column. These are replaced with:
+➤ "000-000-0000"
+
+| Table           | Column   | Null Count | Replacement Value                           |
+| --------------- | -------- | ---------- | ------------------------------------------- |
+| CourseOfferings | Schedule | 113        | Depends on `Semester`:                      |
+|                 |          |            | • Fall → `"Tue/Thu 11:00-12:30,202,2025"`   |
+|                 |          |            | • Summer → `"Mon 13:00-14:30,303,2023"`     |
+|                 |          |            | • Spring → `"Mon 13:00-14:30,303,2023"`     |
+| Enrollments     | Grade    | 88         | `"B"`                                       |
+| Students        | Major    | 110        | `"Physics"` or `"Math"` (randomly assigned) |
+| Students        | Phone    | 124        | `"000-000-0000"`                            |
+
+
+- Update NULL Schedule values in CourseOfferings
+```sql
+-- Fall semester
+UPDATE CourseOfferings
+SET Schedule = 'Tue/Thu 11:00-12:30,202,2025'
+WHERE Schedule IS NULL AND Semester = 'Fall';
+
+-- Summer semester
+UPDATE CourseOfferings
+SET Schedule = 'Mon 13:00-14:30,303,2023'
+WHERE Schedule IS NULL AND Semester = 'Summer';
+
+-- Spring semester
+UPDATE CourseOfferings
+SET Schedule = 'Mon 13:00-14:30,303,2023'
+WHERE Schedule IS NULL AND Semester = 'Spring';
+```
+
+
+
 
 - Apply business rules using constraints (e.g., valid grade ranges, mandatory fields) to enforce data quality and consistency.
 
