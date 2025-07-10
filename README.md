@@ -29,7 +29,7 @@ Modern universities manage thousands of students, courses, instructors, and clas
 
 ### 1. Analyze the Problem Domain
 
-- **Identify key entities (e.g., Students, Courses, Enrollments) and define their relationships and data requirements.**
+#### Identify key entities (e.g., Students, Courses, Enrollments) and define their relationships and data requirements.
   
   | Entity              | Description                                                        | Key Attributes                                         |
 | ------------------- | ------------------------------------------------------------------ | ------------------------------------------------------ |
@@ -92,7 +92,7 @@ Modern universities manage thousands of students, courses, instructors, and clas
 | **Student → Instructors**                   | Indirect (via CourseOfferings)                   | Students are taught by instructors assigned to course offerings they enroll in. |
 
 
-- **Data understanding**
+#### Data understanding
   
   To simulate a realistic environment for the Student Course Registration System, synthetic data was manually generated for each table. Each table contains 500 rows, designed to include various data quality challenges such as null values, empty cells, and duplicates, 
   which reflect real-world database inconsistencies and provide a solid foundation for data integrity enforcement and validation through SQL.
@@ -158,9 +158,9 @@ Modern universities manage thousands of students, courses, instructors, and clas
 </script>
 
 ### 2.  Design an ERD (Entity-Relationship Diagram)
+An Entity-Relationship Diagram (ERD) is a visual representation of the data and relationships in a database. It helps in designing the database structure before actual implementation. They are essential for planning, communicating, and building databases efficiently and correctly.
 
-#### Star Schema
-
+#### 1. Star Schema
 The central fact table connects directly to multiple denormalized dimension tables. Dimension tables have redundant data but simplify queries with fewer joins while using Star Schema. use If the focus is on fast querying and reporting (like analyzing student enrollments, grades, course offerings), and simpler, flatter tables.
 
 - Fact Table: Enrollments (records each registration with facts like Grade, EnrollmentDate)
@@ -183,7 +183,7 @@ The central fact table connects directly to multiple denormalized dimension tabl
 
 
 
-#### Snowflake Schema
+#### 2. Snowflake Schema
 
 An extension of star schema where dimension tables are normalized into multiple related tables, reducing redundancy but increasing complexity and join operations. use If a more normalized structure to save storage space or maintain data integrity is needed, especially when dimension attributes have hierarchical relationships.
 
@@ -244,7 +244,7 @@ An extension of star schema where dimension tables are normalized into multiple 
 ### 3. Implement the Relational Schema in SQL
 A **database** is a structured collection of data stored in a way that makes it easy to retrieve, manage, and update. For example, a University Database might store data about students, courses, instructors, and enrollments. to Implement the Relational Schema in SQL a **database** needs to be create, then use then a table can be created.
 
-- Create database
+#### 1. Create database
 
 ```sql
 Create database STUDENT_REG;
@@ -254,7 +254,7 @@ Use STUDENT_REG;
 
 A **table** is a fundamental unit within a database that organises data into rows and columns, much like a spreadsheet. Each table usually stores one type of data.
 
-- **Create table**
+#### 2. Create table**
 
 ```sql
 -- a) Students Table
@@ -325,7 +325,7 @@ CREATE TABLE Prerequisites (
 NVARCHAR(50): means it can store up to 50 Unicode characters, supporting different languages and characters (e.g., accented letters).
 FOREIGN KEY: A FOREIGN KEY is a constraint in SQL that creates a relationship between two tables. It ensures referential integrity
 
-- **View table**
+#### 3. View table
 
 ```sql
 Select * from Students;
@@ -335,10 +335,9 @@ Select * from Instructors;
 Select * from Enrollments;
 Select * from Prerequisites;
 ```
-
 ![View Table](Student Course Registration System Report/Asset/Image/table view.jpg)
 
-- **Insert data to table**
+#### 4. Insert data to table
 
 ```sql
 
@@ -381,7 +380,6 @@ WITH (
     CODEPAGE = '65001' -- Handles UTF-8
 );
 
-
 ------CourseOfferings----
 
 BULK INSERT CourseOfferings
@@ -409,7 +407,6 @@ WITH (
 );
 
 ----Prerequisites------
-
 
 BULK INSERT Prerequisites
 FROM "C:\Users\hp\Downloads\Prerequisites (1).csv"
@@ -440,7 +437,7 @@ WITH (
 
 **CODEPAGE = '65001'**: Specifies that the file is in UTF-8 encoding. This is necessary if the CSV contains non-English characters, emojis, or accented letters.
 
-- **Verify data insertion**
+#### 5. Verify data insertion
 
 ```sql
 SELECT TOP 3 * FROM Students;
@@ -454,15 +451,271 @@ SELECT TOP 3 * FROM Prerequisites;
 
 ![Top 3 data table](Student Course Registration System Report/Asset/Image/Top 3.jpg)
 
-
-
 ### 4. Simulate Real-World Data Challenges
 
-- Populate tables with manually generated dummy data that includes:
+#### 1. Data consistency enforcement
 
-- Empty fields and NULL values
+##### a. Total numbers of data in each table
+  
+```sql
+Select count(*) As Total_student_table_no from Students;
+Select count(*) As Total_Courses_table_no from Courses;
+Select count(*) As Total_Instructors_table_no from Instructors;
+Select count(*) As Total_CourseOfferings_table_no from CourseOfferings;
+Select count(*) As Total_Prerequisitese_no from Prerequisites;
+```
+![Total number of data](Student Course Registration System Report/Asset/Image/Total number column.jpg)
 
-- Duplicate entries
+#### 2. Empty fields and NULL values
+
+##### a. Numbers of column in each table
+
+```sql
+-- Students Table
+SELECT 
+    COUNT(*) AS Total_Students_Columns,
+    STRING_AGG(COLUMN_NAME, ', ') AS Student_Columns
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'Students';
+
+-- Courses Table
+SELECT 
+    COUNT(*) AS Total_Courses_Columns,
+    STRING_AGG(COLUMN_NAME, ', ') AS Course_Columns
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'Courses';
+
+-- Instructors Table
+SELECT 
+    COUNT(*) AS Total_Instructors_Columns,
+    STRING_AGG(COLUMN_NAME, ', ') AS Instructor_Columns
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'Instructors';
+
+-- CourseOfferings Table
+SELECT 
+    COUNT(*) AS Total_CourseOfferings_Columns,
+    STRING_AGG(COLUMN_NAME, ', ') AS CourseOfferings_Columns
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'CourseOfferings';
+
+-- Prerequisites Table
+SELECT 
+    COUNT(*) AS Total_Prerequisites_Columns,
+    STRING_AGG(COLUMN_NAME, ', ') AS Prerequisites_Columns
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'Prerequisites';
+```
+![Columns](Student Course Registration System Report/Asset/Image/columns.jpg)
+
+##### b. Duplicate entries
+
+No duplicate in the data after running this code.
+
+```sql
+SELECT 
+    FirstName, LastName, Email, Phone, Major, Year,
+    COUNT(*) AS Occurrences
+FROM Students
+GROUP BY FirstName, LastName, Email, Phone, Major, Year
+HAVING COUNT(*) > 1;
+
+-- Total number of duplicate rows
+SELECT 
+    SUM(Occurrences) - COUNT(*) AS Total_Duplicates
+FROM (
+    SELECT COUNT(*) AS Occurrences
+    FROM Students
+    GROUP BY FirstName, LastName, Email, Phone, Major, Year
+    HAVING COUNT(*) > 1
+) AS Dup;
+
+---Courses Table – Duplicate Rows---
+
+SELECT 
+    CourseCode, Title, Credits, Department,
+    COUNT(*) AS Occurrences
+FROM Courses
+GROUP BY CourseCode, Title, Credits, Department
+HAVING COUNT(*) > 1;
+
+SELECT 
+    SUM(Occurrences) - COUNT(*) AS Total_Duplicates
+FROM (
+    SELECT COUNT(*) AS Occurrences
+    FROM Courses
+    GROUP BY CourseCode, Title, Credits, Department
+    HAVING COUNT(*) > 1
+) AS Dup;
+
+---Instructors Table – Duplicate Rows---
+
+SELECT 
+    FirstName, LastName, Email, Department,
+    COUNT(*) AS Occurrences
+FROM Instructors
+GROUP BY FirstName, LastName, Email, Department
+HAVING COUNT(*) > 1;
+
+SELECT 
+    SUM(Occurrences) - COUNT(*) AS Total_Duplicates
+FROM (
+    SELECT COUNT(*) AS Occurrences
+    FROM Instructors
+    GROUP BY FirstName, LastName, Email, Department
+    HAVING COUNT(*) > 1
+) AS Dup;
+
+
+---CourseOfferings Table – Duplicate Rows---
+
+SELECT 
+    CourseID, Semester, InstructorID, Schedule,
+    COUNT(*) AS Occurrences
+FROM CourseOfferings
+GROUP BY CourseID, Semester, InstructorID, Schedule
+HAVING COUNT(*) > 1;
+
+SELECT 
+    SUM(Occurrences) - COUNT(*) AS Total_Duplicates
+FROM (
+    SELECT COUNT(*) AS Occurrences
+    FROM CourseOfferings
+    GROUP BY CourseID, Semester, InstructorID, Schedule
+    HAVING COUNT(*) > 1
+) AS Dup;
+
+---Prerequisites Table – Duplicate Rows---
+
+SELECT 
+    CourseID, PrerequisiteID,
+    COUNT(*) AS Occurrences
+FROM Prerequisites
+GROUP BY CourseID, PrerequisiteID
+HAVING COUNT(*) > 1;
+
+SELECT 
+    SUM(Occurrences) - COUNT(*) AS Total_Duplicates
+FROM (
+    SELECT COUNT(*) AS Occurrences
+    FROM Prerequisites
+    GROUP BY CourseID, PrerequisiteID
+    HAVING COUNT(*) > 1
+) AS Dup;
+```
+![Total nulls number](Student Course Registration System Report/Asset/Image/Nulls.jpg)
+
+##### c. Total number of null values and empty cells
+
+```sql
+SELECT
+    COUNT(*) AS TotalRows,
+    
+    SUM(CASE WHEN FirstName IS NULL THEN 1 ELSE 0 END) AS Null_FirstName,
+    SUM(CASE WHEN FirstName = '' THEN 1 ELSE 0 END) AS Empty_FirstName,
+
+    SUM(CASE WHEN LastName IS NULL THEN 1 ELSE 0 END) AS Null_LastName,
+    SUM(CASE WHEN LastName = '' THEN 1 ELSE 0 END) AS Empty_LastName,
+
+    SUM(CASE WHEN Email IS NULL THEN 1 ELSE 0 END) AS Null_Email,
+    SUM(CASE WHEN Email = '' THEN 1 ELSE 0 END) AS Empty_Email,
+
+    SUM(CASE WHEN Phone IS NULL THEN 1 ELSE 0 END) AS Null_Phone,
+    SUM(CASE WHEN Phone = '' THEN 1 ELSE 0 END) AS Empty_Phone,
+
+    SUM(CASE WHEN Major IS NULL THEN 1 ELSE 0 END) AS Null_Major,
+    SUM(CASE WHEN Major = '' THEN 1 ELSE 0 END) AS Empty_Major,
+
+    SUM(CASE WHEN Year IS NULL THEN 1 ELSE 0 END) AS Null_Year,
+    SUM(CASE WHEN Year = '' THEN 1 ELSE 0 END) AS Empty_Year
+
+FROM Students;
+
+SELECT
+    COUNT(*) AS TotalRows,
+
+    -- CourseCode column (text)
+    SUM(CASE WHEN CourseCode IS NULL THEN 1 ELSE 0 END) AS Null_CourseCode,
+    SUM(CASE WHEN CourseCode = '' THEN 1 ELSE 0 END) AS Empty_CourseCode,
+
+    -- Title column (text)
+    SUM(CASE WHEN Title IS NULL THEN 1 ELSE 0 END) AS Null_Title,
+    SUM(CASE WHEN Title = '' THEN 1 ELSE 0 END) AS Empty_Title,
+
+    -- Credits column (numeric)
+    SUM(CASE WHEN Credits IS NULL THEN 1 ELSE 0 END) AS Null_Credits,
+
+    -- Department column (text)
+    SUM(CASE WHEN Department IS NULL THEN 1 ELSE 0 END) AS Null_Department,
+    SUM(CASE WHEN Department = '' THEN 1 ELSE 0 END) AS Empty_Department
+
+FROM Courses;
+
+SELECT
+    COUNT(*) AS TotalRows,
+
+    SUM(CASE WHEN FirstName IS NULL THEN 1 ELSE 0 END) AS Null_FirstName,
+    SUM(CASE WHEN FirstName = '' THEN 1 ELSE 0 END) AS Empty_FirstName,
+
+    SUM(CASE WHEN LastName IS NULL THEN 1 ELSE 0 END) AS Null_LastName,
+    SUM(CASE WHEN LastName = '' THEN 1 ELSE 0 END) AS Empty_LastName,
+
+    SUM(CASE WHEN Email IS NULL THEN 1 ELSE 0 END) AS Null_Email,
+    SUM(CASE WHEN Email = '' THEN 1 ELSE 0 END) AS Empty_Email,
+
+    SUM(CASE WHEN Department IS NULL THEN 1 ELSE 0 END) AS Null_Department,
+    SUM(CASE WHEN Department = '' THEN 1 ELSE 0 END) AS Empty_Department
+
+FROM Instructors;
+
+
+SELECT
+    COUNT(*) AS TotalRows,
+
+    SUM(CASE WHEN CourseID IS NULL THEN 1 ELSE 0 END) AS Null_CourseID,
+
+    SUM(CASE WHEN Semester IS NULL THEN 1 ELSE 0 END) AS Null_Semester,
+    SUM(CASE WHEN Semester = '' THEN 1 ELSE 0 END) AS Empty_Semester,
+
+    SUM(CASE WHEN InstructorID IS NULL THEN 1 ELSE 0 END) AS Null_InstructorID,
+
+    SUM(CASE WHEN Schedule IS NULL THEN 1 ELSE 0 END) AS Null_Schedule,
+    SUM(CASE WHEN Schedule = '' THEN 1 ELSE 0 END) AS Empty_Schedule
+
+FROM CourseOfferings;
+
+SELECT
+    COUNT(*) AS TotalRows,
+
+    SUM(CASE WHEN StudentID IS NULL THEN 1 ELSE 0 END) AS Null_StudentID,
+    SUM(CASE WHEN OfferingID IS NULL THEN 1 ELSE 0 END) AS Null_OfferingID,
+    SUM(CASE WHEN EnrollmentDate IS NULL THEN 1 ELSE 0 END) AS Null_EnrollmentDate,
+
+    SUM(CASE WHEN Grade IS NULL THEN 1 ELSE 0 END) AS Null_Grade,
+    SUM(CASE WHEN Grade = '' THEN 1 ELSE 0 END) AS Empty_Grade
+
+FROM Enrollments;
+
+SELECT
+    COUNT(*) AS TotalRows,
+
+    SUM(CASE WHEN CourseID IS NULL THEN 1 ELSE 0 END) AS Null_CourseID,
+    SUM(CASE WHEN PrerequisiteID IS NULL THEN 1 ELSE 0 END) AS Null_PrerequisiteID
+
+FROM Prerequisites;
+```
+![Total nulls in each table](Student Course Registration System Report/Asset/Image/column nulls.jpg)
+
+| **Table**         | **Column**    | **NULL Count** | **Remarks**                         |
+| ----------------- | ------------- | -------------- | ----------------------------------- |
+| `Students`        | `Phone`       | 124            | Missing contact information         |
+| `Students`        | `Major`       | 110            | Students with unspecified major     |
+| `Courses`         | *All Columns* | 0              | No NULL values detected             |
+| `Instructors`     | *All Columns* | 0              | No NULL values detected             |
+| `CourseOfferings` | `Schedule`    | 113            | Courses without assigned schedule   |
+| `Enrollments`     | `Grade`       | 88             | Students with no recorded grade yet |
+| `Prerequisites`   | *All Columns* | 0              | No NULL values detected             |
+
 
 ### 5. Inconsistent or edge-case values (e.g., invalid grades, blank emails)
 
