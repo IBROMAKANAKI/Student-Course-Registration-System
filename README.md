@@ -757,6 +757,8 @@ In the Students table:
 | Students        | Phone    | 124        | `"000-000-0000"`                            |
 
 
+##### b. Data cleaning steps
+
 - Update NULL Schedule values in CourseOfferings
 ```sql
 -- Fall semester
@@ -775,22 +777,281 @@ SET Schedule = 'Mon 13:00-14:30,303,2023'
 WHERE Schedule IS NULL AND Semester = 'Spring';
 ```
 
+- Update NULL Grade values in Enrollments
+```sql
+UPDATE Enrollments
+SET Grade = 'B'
+WHERE Grade IS NULL;
+```
+
+- Update NULL Major values in Students
+  **Note**: Since there is no logic to differentiate between assigning "Physics" or "Math", we'll randomly assign one of them using a SQL trick (if you want all to be "Physics" or "Math")
+```sql
+UPDATE Students
+SET Major = 
+    CASE 
+        WHEN ABS(CHECKSUM(NEWID())) % 2 = 0 THEN 'Physics'
+        ELSE 'Math'
+    END
+WHERE Major IS NULL;
+```
+
+- Update NULL Phone values in Students
+```sql
+UPDATE Students
+SET Phone = '000-000-0000'
+WHERE Phone IS NULL;
+```
+
+- Data cleaning complete Check.
+  ```sql
+SELECT
+    COUNT(*) AS TotalRows,
+    
+    SUM(CASE WHEN FirstName IS NULL THEN 1 ELSE 0 END) AS Null_FirstName,
+    SUM(CASE WHEN FirstName = '' THEN 1 ELSE 0 END) AS Empty_FirstName,
+
+    SUM(CASE WHEN LastName IS NULL THEN 1 ELSE 0 END) AS Null_LastName,
+    SUM(CASE WHEN LastName = '' THEN 1 ELSE 0 END) AS Empty_LastName,
+
+    SUM(CASE WHEN Email IS NULL THEN 1 ELSE 0 END) AS Null_Email,
+    SUM(CASE WHEN Email = '' THEN 1 ELSE 0 END) AS Empty_Email,
+
+    SUM(CASE WHEN Phone IS NULL THEN 1 ELSE 0 END) AS Null_Phone,
+    SUM(CASE WHEN Phone = '' THEN 1 ELSE 0 END) AS Empty_Phone,
+
+    SUM(CASE WHEN Major IS NULL THEN 1 ELSE 0 END) AS Null_Major,
+    SUM(CASE WHEN Major = '' THEN 1 ELSE 0 END) AS Empty_Major,
+
+    SUM(CASE WHEN Year IS NULL THEN 1 ELSE 0 END) AS Null_Year,
+    SUM(CASE WHEN Year = '' THEN 1 ELSE 0 END) AS Empty_Year
+
+FROM Students;
+
+SELECT
+    COUNT(*) AS TotalRows,
+
+    -- CourseCode column (text)
+    SUM(CASE WHEN CourseCode IS NULL THEN 1 ELSE 0 END) AS Null_CourseCode,
+    SUM(CASE WHEN CourseCode = '' THEN 1 ELSE 0 END) AS Empty_CourseCode,
+
+    -- Title column (text)
+    SUM(CASE WHEN Title IS NULL THEN 1 ELSE 0 END) AS Null_Title,
+    SUM(CASE WHEN Title = '' THEN 1 ELSE 0 END) AS Empty_Title,
+
+    -- Credits column (numeric)
+    SUM(CASE WHEN Credits IS NULL THEN 1 ELSE 0 END) AS Null_Credits,
+
+    -- Department column (text)
+    SUM(CASE WHEN Department IS NULL THEN 1 ELSE 0 END) AS Null_Department,
+    SUM(CASE WHEN Department = '' THEN 1 ELSE 0 END) AS Empty_Department
+
+FROM Courses;
+
+SELECT
+    COUNT(*) AS TotalRows,
+
+    SUM(CASE WHEN FirstName IS NULL THEN 1 ELSE 0 END) AS Null_FirstName,
+    SUM(CASE WHEN FirstName = '' THEN 1 ELSE 0 END) AS Empty_FirstName,
+
+    SUM(CASE WHEN LastName IS NULL THEN 1 ELSE 0 END) AS Null_LastName,
+    SUM(CASE WHEN LastName = '' THEN 1 ELSE 0 END) AS Empty_LastName,
+
+    SUM(CASE WHEN Email IS NULL THEN 1 ELSE 0 END) AS Null_Email,
+    SUM(CASE WHEN Email = '' THEN 1 ELSE 0 END) AS Empty_Email,
+
+    SUM(CASE WHEN Department IS NULL THEN 1 ELSE 0 END) AS Null_Department,
+    SUM(CASE WHEN Department = '' THEN 1 ELSE 0 END) AS Empty_Department
+
+FROM Instructors;
 
 
+SELECT
+    COUNT(*) AS TotalRows,
 
-- Apply business rules using constraints (e.g., valid grade ranges, mandatory fields) to enforce data quality and consistency.
+    SUM(CASE WHEN CourseID IS NULL THEN 1 ELSE 0 END) AS Null_CourseID,
 
-### 6. Write and Execute SQL Queries for Analysis
+    SUM(CASE WHEN Semester IS NULL THEN 1 ELSE 0 END) AS Null_Semester,
+    SUM(CASE WHEN Semester = '' THEN 1 ELSE 0 END) AS Empty_Semester,
 
-- Develop queries to:
+    SUM(CASE WHEN InstructorID IS NULL THEN 1 ELSE 0 END) AS Null_InstructorID,
 
-- Retrieve student transcripts
+    SUM(CASE WHEN Schedule IS NULL THEN 1 ELSE 0 END) AS Null_Schedule,
+    SUM(CASE WHEN Schedule = '' THEN 1 ELSE 0 END) AS Empty_Schedule
 
-- Identify enrollment trends
+FROM CourseOfferings;
 
-- Detect data issues (e.g., duplicates, missing prerequisites)
+SELECT
+    COUNT(*) AS TotalRows,
 
-- Summarize course loads for instructors and departments
+    SUM(CASE WHEN StudentID IS NULL THEN 1 ELSE 0 END) AS Null_StudentID,
+    SUM(CASE WHEN OfferingID IS NULL THEN 1 ELSE 0 END) AS Null_OfferingID,
+    SUM(CASE WHEN EnrollmentDate IS NULL THEN 1 ELSE 0 END) AS Null_EnrollmentDate,
+
+    SUM(CASE WHEN Grade IS NULL THEN 1 ELSE 0 END) AS Null_Grade,
+    SUM(CASE WHEN Grade = '' THEN 1 ELSE 0 END) AS Empty_Grade
+
+FROM Enrollments;
+
+SELECT
+    COUNT(*) AS TotalRows,
+
+    SUM(CASE WHEN CourseID IS NULL THEN 1 ELSE 0 END) AS Null_CourseID,
+    SUM(CASE WHEN PrerequisiteID IS NULL THEN 1 ELSE 0 END) AS Null_PrerequisiteID
+
+FROM Prerequisites;
+```
+
+![Data cleaning check](Student Course Registration System Report/Asset/Image/data cleaning.jpg)
+
+
+### 6. Querying, Data Integrity, and Business Logic
+
+#### a) Student Services Queries
+
+- **Question 1**: Retrieve all courses a student is enrolled in for a given semester.
+
+```sql
+SELECT 
+    CO.Semester,
+    S.FirstName, 
+    S.LastName, 
+    S.Major, 
+    C.CourseCode, 
+    C.Title, 
+    C.CourseID, 
+    C.Department
+FROM 
+    Students S
+INNER JOIN Enrollments E ON S.StudentID = E.StudentID
+INNER JOIN CourseOfferings CO ON E.OfferingID = CO.OfferingID
+INNER JOIN Courses C ON CO.CourseID = C.CourseID
+WHERE 
+    CO.Semester LIKE 'Fall%' 
+    OR CO.Semester LIKE 'Winter%' 
+    OR CO.Semester LIKE 'Spring%' 
+    OR CO.Semester LIKE 'Summer%'
+ORDER BY 
+    CO.Semester, 
+    S.LastName, 
+    S.FirstName;
+```
+![Question 1](Student Course Registration System Report/Asset/Image/Question 1.jpg)
+
+- **Question 2**: Display a student's transcript (course titles, semesters, grades, GPA).
+
+```sql
+SELECT 
+    S.StudentID,
+    S.FirstName,
+    S.LastName,
+    C.Title AS CourseTitle,
+    CO.Semester,
+    E.Grade,
+    C.Credits,
+    
+    -- Grade Points based on letter grade multiplied by course credits
+    (
+        CASE E.Grade
+            WHEN 'A'  THEN 4.0
+            WHEN 'A-' THEN 3.7
+            WHEN 'B+' THEN 3.3
+            WHEN 'B'  THEN 3.0
+            WHEN 'B-' THEN 2.7
+            WHEN 'C+' THEN 2.3
+            WHEN 'C'  THEN 2.0
+            WHEN 'C-' THEN 1.7
+            WHEN 'D'  THEN 1.0
+            WHEN 'F'  THEN 0.0
+            ELSE NULL
+        END
+    ) * C.Credits AS GradePoints,
+
+    -- GPA per Semester using windowed aggregate functions
+    ROUND(
+        SUM(
+            (
+                CASE E.Grade
+                    WHEN 'A'  THEN 4.0
+                    WHEN 'A-' THEN 3.7
+                    WHEN 'B+' THEN 3.3
+                    WHEN 'B'  THEN 3.0
+                    WHEN 'B-' THEN 2.7
+                    WHEN 'C+' THEN 2.3
+                    WHEN 'C'  THEN 2.0
+                    WHEN 'C-' THEN 1.7
+                    WHEN 'D'  THEN 1.0
+                    WHEN 'F'  THEN 0.0
+                    ELSE NULL
+                END
+            ) * C.Credits
+        ) OVER (PARTITION BY CO.Semester) 
+        / 
+        SUM(C.Credits) OVER (PARTITION BY CO.Semester), 
+        2
+    ) AS GPA_Per_Semester
+
+FROM 
+    Students S
+INNER JOIN Enrollments E ON S.StudentID = E.StudentID
+INNER JOIN CourseOfferings CO ON E.OfferingID = CO.OfferingID
+INNER JOIN Courses C ON CO.CourseID = C.CourseID
+
+WHERE 
+    S.StudentID = 15 -- Change as needed for any student transcript
+
+ORDER BY 
+    CO.Semester;
+```
+
+![Transcript](Student Course Registration System Report/Asset/Image/GPA.jpg)
+
+- **Question 3**: Find students who haven't completed prerequisites for a course.
+
+```sql
+SELECT DISTINCT
+    S.StudentID,
+    S.FirstName,
+    S.LastName,
+    CO.CourseID,
+    C.Title AS CourseTitle
+FROM
+    Students S
+JOIN Enrollments E ON S.StudentID = E.StudentID
+JOIN CourseOfferings CO ON E.OfferingID = CO.OfferingID
+JOIN Courses C ON CO.CourseID = C.CourseID
+JOIN Prerequisites P ON P.CourseID = CO.CourseID
+WHERE
+    NOT EXISTS (
+        SELECT 1
+        FROM Enrollments E2
+        JOIN CourseOfferings CO2 ON E2.OfferingID = CO2.OfferingID
+        WHERE E2.StudentID = S.StudentID
+          AND CO2.CourseID = P.PrerequisiteID
+          AND E2.Grade IN ('A','A-','B+','B','B-','C+','C','C-','D')  -- Passing grades
+    )
+ORDER BY
+    S.StudentID, CO.CourseID;
+```
+
+![Question 3](Student Course Registration System Report/Asset/Image/Question 3.jpg)
+
+
+#### b) Administrative Queries
+
+- List all courses offered in a department in a given semester.
+
+- Generate instructor-wise course loads per semester.
+
+- Find under-enrolled offerings (less than 5 students).
+
+#### C) Update and Maintain Data
+
+- Update a student’s major.
+
+- Assign grades to students post-semester.
+
+- Drop a student from a course.
 
 ### 7. Optional: Create SQL Views for Abstraction
 
