@@ -25,6 +25,63 @@ Modern universities manage thousands of students, courses, instructors, and clas
 
 - Handle student course registrations and grades.
 
+## 📌 Methodology
+For this SQL project, this include:
+
+### Schema design using ER diagrams
+
+- Identify key entities (e.g., Students, Courses, Instructors).
+
+- Define attributes for each entity (e.g., StudentID, CourseTitle).
+
+- Establish relationships (e.g., Students enroll in Courses).
+
+- Create an Entity-Relationship Diagram (ERD) to visually model the data structure.
+
+- ERDs help avoid redundancy and ensure normalization.
+
+### SQL implementation (CREATE, INSERT, SELECT, etc.)
+Convert the ERD into SQL code using:
+
+- CREATE TABLE to define structure.
+
+- PRIMARY KEY, FOREIGN KEY, CHECK, NOT NULL, and UNIQUE for integrity.
+
+- Use INSERT statements to populate the tables with data.
+
+- Run SELECT, UPDATE, DELETE, and JOIN queries to interact with data.
+
+### Manual data generation (including nulls, duplicates)
+Generate sample data to simulate real-world scenarios.
+
+- Introduce:
+
+- Nulls to test optional fields.
+
+- Duplicates to test constraints or error handling.
+
+- Insert both valid and edge-case values to verify data behavior.
+
+### Query writing for analysis
+Write SQL queries to:
+
+- Analyze student grades, course offerings, instructor schedules.
+
+- Track enrollments, course popularity, and performance trends.
+
+- Use advanced SQL techniques like:
+
+  GROUP BY, HAVING, ORDER BY
+
+  Aggregates (COUNT, AVG, SUM)
+
+  Views and subqueries
+
+  graph TD
+    A[Schema Design (ERD)] --> B[SQL Implementation]
+    B --> C[Manual Data Generation]
+    C --> D[Query Writing & Analysis]
+
 ## ✅ Objectives
 
 ### 1. Analyze the Problem Domain
@@ -39,7 +96,6 @@ Modern universities manage thousands of students, courses, instructors, and clas
 | **CourseOfferings** | Specific instances of courses taught in a semester.                | OfferingID, CourseID, Semester, InstructorID, Schedule |
 | **Enrollments**     | Records of students registering for specific course offerings.     | EnrollmentID, StudentID, OfferingID, Grade, Date       |
 | **Prerequisites**   | Courses that must be completed before enrolling in another course. | CourseID, PrerequisiteID                               |
-
 
 
   1. Students ↔ Enrollments
@@ -65,16 +121,8 @@ Modern universities manage thousands of students, courses, instructors, and clas
   5. Courses ↔ Prerequisites
      Type: Many-to-Many (Self-Referencing)
      Explanation: A course can have multiple prerequisites, and a course can be a prerequisite for multiple other courses.
-     Implementation: Prerequisites table acts as a bridge with composite keys CourseID and PrerequisiteID.     
-
-    | Relationship                       | Type             |
-| -------------------------------------- | -----------------|
-| **Student → Enrollments**              | One-to-Many      |
-| **Course → CourseOfferings**           | One-to-Many      |
-| **Instructor → CourseOfferings**       | One-to-Many      |
-| **CourseOffering → Enrollments**       | One-to-Many      |
-| **Course ↔ Prerequisites (Self-join)** | Many-to-Many     |
-
+     Implementation: Prerequisites table acts as a bridge with composite keys CourseID and PrerequisiteID.
+     
 
 | Relationship                     | Cardinality | Description                                                   |
 | -------------------------------- | ----------- | ------------------------------------------------------------- |
@@ -906,13 +954,12 @@ SELECT
 
 FROM Prerequisites;
 ```
-
 ![Data cleaning check](Student Course Registration System Report/Asset/Image/clean data.jpg)
 
 
 ### 6. Querying, Data Integrity, and Business Logic
 
-#### a) Student Services Queries
+#### A) Student Services Queries
 
 - **Question 1**: Retrieve all courses a student is enrolled in for a given semester.
 
@@ -1042,7 +1089,7 @@ ORDER BY
 ![Question 3](Student Course Registration System Report/Asset/Image/Question 3.jpg)
 
 
-#### b) Administrative Queries
+#### B) Administrative Queries
 
 - **Question 4**: List all courses offered in a department in a given semester.
 
@@ -1171,7 +1218,7 @@ WHERE StudentID = 1;
 
 <div class="image-container">
   <img src="Student Course Registration System Report/Asset/Image/Before update.jpg" alt="Before Update">
-  <img src="Student Course Registration System Report/Asset/Image/After update.jpg" alt="After Update">
+  <img src="Student Course Registration System Report/Asset/Image/After Update.jpg" alt="After Update">
 </div>
 
 - **Question 8**: Assign grades to students post-semester.
@@ -1214,75 +1261,223 @@ WHERE StudentID = 163
 </div>
 
 - **Question 9**: Drop a student from a course.
-
+  
 ```sql
-
+DELETE FROM Enrollments
+WHERE StudentID = 386 AND OfferingID = 105;
 ```
+
+<style>
+.image-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.image-container img {
+    width: 300px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: zoom-in;
+}
+
+.image-container img:hover {
+    transform: scale(1.2);
+    z-index: 10;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+</style>
+
+<div class="image-container">
+  <img src="Student Course Registration System Report/Asset/Image/Before_delete.jpg" alt="Before Delete">
+  <img src="Student Course Registration System Report/Asset/Image/After_Delete.jpg" alt="After Delete">
+</div>
 
 ### 7. Optional: Create SQL Views for Abstraction
 
-```sql
-
-```
-
-- Build virtual tables (views) for simplified access to complex joins, such as:
-
-- **Question 10**: StudentTranscriptView
+- **Question 10**: StudentTranscriptView (Combines student, course, and grade info with GPA)
 
 ```sql
-
+CREATE VIEW Student_Transcript_View AS
+SELECT
+    S.StudentID,
+    S.FirstName,
+    S.LastName,
+    C.CourseID,
+    C.Title AS CourseTitle,
+    E.OfferingID,
+    E.Grade,
+    -- Example GPA calculation assuming letter grades converted to points
+    CASE E.Grade
+        WHEN 'A'  THEN 4.0
+        WHEN 'A-' THEN 3.7
+        WHEN 'B+' THEN 3.3
+        WHEN 'B'  THEN 3.0
+        WHEN 'B-' THEN 2.7
+        WHEN 'C+' THEN 2.3
+        WHEN 'C'  THEN 2.0
+        WHEN 'C-' THEN 1.7
+        WHEN 'D'  THEN 1.0
+        WHEN 'F'  THEN 0.0
+        ELSE NULL
+    END AS GradePoints
+FROM Students S
+JOIN Enrollments E ON S.StudentID = E.StudentID
+JOIN CourseOfferings CO ON E.OfferingID = CO.OfferingID
+JOIN Courses C ON CO.CourseID = C.CourseID;
 ```
 
-- **Question 4**: InstructorScheduleView
+![View created](Student Course Registration System Report/Asset/Image/View.jpg)
 
-### 8. Reflect on Data Cleaning Needs
+- **Question 11**: InstructorScheduleView (Lists courses and schedule for each instructor)
 
-- Use SQL to identify and potentially isolate records that need cleaning or manual correction.
+```sql
+CREATE VIEW Instructor_Schedule_View AS
+SELECT
+    I.InstructorID,
+    I.FirstName,
+    I.LastName,
+    C.CourseID,
+    C.Title AS CourseTitle,
+    CO.OfferingID,
+    CO.Semester,
 
-## 9. Scope of the Project
+    -- Extract and clean Year (3rd comma-separated value)
+    CAST(
+        REPLACE(
+            LTRIM(RTRIM(
+                SUBSTRING(
+                    CO.Schedule,
+                    CHARINDEX(',', CO.Schedule, CHARINDEX(',', CO.Schedule) + 1) + 1,
+                    LEN(CO.Schedule)
+                )
+            )), '"', ''
+        ) AS INT
+    ) AS Year,
 
-- Includes: Student registration, course enrollment, instructor assignment, grade recording.
+    -- Extract and clean Room (2nd comma-separated value)
+    CAST(
+        REPLACE(
+            LTRIM(RTRIM(
+                SUBSTRING(
+                    CO.Schedule,
+                    CHARINDEX(',', CO.Schedule) + 1,
+                    CHARINDEX(',', CO.Schedule, CHARINDEX(',', CO.Schedule) + 1) - CHARINDEX(',', CO.Schedule) - 1
+                )
+            )), '"', ''
+        ) AS INT
+    ) AS Room,
 
-- Excludes: Payment processing, learning content delivery, real-time notifications.
+    -- Extract Days (before first space)
+    SUBSTRING(
+        CO.Schedule,
+        1,
+        CHARINDEX(' ', CO.Schedule) - 1
+    ) AS Days,
 
-## 10. Methodology
-For this SQL project, this include:
+    -- Extract StartTime (after first space, before '-')
+    SUBSTRING(
+        CO.Schedule,
+        CHARINDEX(' ', CO.Schedule) + 1,
+        CHARINDEX('-', CO.Schedule) - CHARINDEX(' ', CO.Schedule) - 1
+    ) AS StartTime,
 
-- Schema design using ER diagrams
+    -- Extract EndTime (between '-' and first comma)
+    SUBSTRING(
+        CO.Schedule,
+        CHARINDEX('-', CO.Schedule) + 1,
+        CHARINDEX(',', CO.Schedule) - CHARINDEX('-', CO.Schedule) - 1
+    ) AS EndTime
 
-- SQL implementation (CREATE, INSERT, SELECT, etc.)
+FROM Instructors I
+JOIN CourseOfferings CO ON I.InstructorID = CO.InstructorID
+JOIN Courses C ON CO.CourseID = C.CourseID;
+```
+![Instructor View](Student Course Registration System Report/Asset/Image/Instructor_View.jpg)
 
-- Manual data generation (including nulls, duplicates)
+## Key Insight
 
-- Query writing for analysis
+- **Average GPA Across All Students**
 
-## 11. System Design / Architecture
+```sql
+SELECT 
+    AVG(
+        CASE E.Grade
+            WHEN 'A'  THEN 4.0
+            WHEN 'A-' THEN 3.7
+            WHEN 'B+' THEN 3.3
+            WHEN 'B'  THEN 3.0
+            WHEN 'B-' THEN 2.7
+            WHEN 'C+' THEN 2.3
+            WHEN 'C'  THEN 2.0
+            WHEN 'C-' THEN 1.7
+            WHEN 'D'  THEN 1.0
+            WHEN 'F'  THEN 0.0
+            ELSE NULL
+        END
+    ) AS AverageGPA
+FROM Enrollments E;
+```
+![Average GPA Across All Students](Student Course Registration System Report/Asset/Image/AverageGPA.jpg)
 
-- ERD (Entity Relationship Diagram)
+- ***Department with Highest Enrollment and GPA**
+```sql
+SELECT TOP 1
+    C.Department,
+    COUNT(E.EnrollmentID) AS TotalEnrollments,
+    AVG(
+        CASE E.Grade
+            WHEN 'A'  THEN 4.0
+            WHEN 'A-' THEN 3.7
+            WHEN 'B+' THEN 3.3
+            WHEN 'B'  THEN 3.0
+            WHEN 'B-' THEN 2.7
+            WHEN 'C+' THEN 2.3
+            WHEN 'C'  THEN 2.0
+            WHEN 'C-' THEN 1.7
+            WHEN 'D'  THEN 1.0
+            WHEN 'F'  THEN 0.0
+            ELSE NULL
+        END
+    ) AS AverageGPA
+FROM Enrollments E
+JOIN CourseOfferings CO ON E.OfferingID = CO.OfferingID
+JOIN Courses C ON CO.CourseID = C.CourseID
+GROUP BY C.Department
+ORDER BY TotalEnrollments DESC;
+```
+![Department with Highest Enrollment and GPA]()
 
-- Normalization process
-
-- Table relationships and structure
-
-## 12. Challenges and Limitations
+## Challenges and Limitations
 
 - Manually generating realistic data
 
 - Handling large CSV imports with null/duplicate values
 
-## 13. Results / Output Samples
-Show some SQL query outputs, insights gathered from the analysis, or screenshots (optional).
-
-## 14. Conclusion
+## Conclusion
 Summarize what you achieved, what went well, and what could be improved.
 
-## 15. Future Work / Recommendations
+## Future Work / Recommendations
 
 - Integrate with front-end UI
 
 - Add stored procedures and triggers
 
 - Real-time dashboard using BI tools
+  
+- Add waitlist functionality for full courses
+  
+- Implement term-based GPA tracking
+  
+- Add auditing for grade changes
+  
+- Develop predictive models for course demand
+  
+- Having rich sample data ensures better testing
 
 
 
