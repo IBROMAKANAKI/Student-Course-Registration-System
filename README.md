@@ -31,7 +31,7 @@ Modern universities manage thousands of students, courses, instructors, and clas
 
 #### Identify key entities (e.g., Students, Courses, Enrollments) and define their relationships and data requirements.
   
-  | Entity              | Description                                                        | Key Attributes                                         |
+  | Entity              | Description                                                        | Key Attributes                                       |
 | ------------------- | ------------------------------------------------------------------ | ------------------------------------------------------ |
 | **Students**        | Individuals who enroll in the university and register for courses. | StudentID, FirstName, LastName, Email, Major, Year     |
 | **Courses**         | Abstract course definitions offered by departments.                | CourseID, CourseCode, Title, Credits, Department       |
@@ -65,16 +65,15 @@ Modern universities manage thousands of students, courses, instructors, and clas
   5. Courses ↔ Prerequisites
      Type: Many-to-Many (Self-Referencing)
      Explanation: A course can have multiple prerequisites, and a course can be a prerequisite for multiple other courses.
-     Implementation: Prerequisites table acts as a bridge with composite keys CourseID and PrerequisiteID.
-     
+     Implementation: Prerequisites table acts as a bridge with composite keys CourseID and PrerequisiteID.     
 
-    | Relationship                       | Type         |
-| ---------------------------------- | -----------------|
-| **Student → Enrollments**             | One-to-Many   |
-| **Course → CourseOfferings**           | One-to-Many  |
-| **Instructor → CourseOfferings**       | One-to-Many  |
-| **CourseOffering → Enrollments**       | One-to-Many  |
-| **Course ↔ Prerequisites (Self-join)** | Many-to-Many |
+    | Relationship                       | Type             |
+| -------------------------------------- | -----------------|
+| **Student → Enrollments**              | One-to-Many      |
+| **Course → CourseOfferings**           | One-to-Many      |
+| **Instructor → CourseOfferings**       | One-to-Many      |
+| **CourseOffering → Enrollments**       | One-to-Many      |
+| **Course ↔ Prerequisites (Self-join)** | Many-to-Many     |
 
 
 | Relationship                     | Cardinality | Description                                                   |
@@ -1110,6 +1109,31 @@ ORDER BY
 ![Question 5](Student Course Registration System Report/Asset/Image/Coursetaught.jpg)
 
 - **Question 6**: Find under-enrolled offerings (less than 5 students).
+
+```sql
+SELECT
+    S.FirstName,
+    S.LastName,
+    E.OfferingID,
+    E.EnrollmentID
+FROM
+    Enrollments E
+JOIN
+    Students S ON E.StudentID = S.StudentID
+WHERE
+    E.OfferingID IN (
+        SELECT OfferingID
+        FROM Enrollments
+        GROUP BY OfferingID
+        HAVING COUNT(StudentID) < 5
+    )
+ORDER BY
+    E.OfferingID, S.LastName, S.FirstName;
+```
+
+![Question 6](Student Course Registration System Report/Asset/Image/Enroll.jpg)
+
+
 
 #### C) Update and Maintain Data
 
