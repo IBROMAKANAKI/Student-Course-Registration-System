@@ -759,18 +759,19 @@ In the Students table:
 ##### b. Data cleaning steps
 
 - Update NULL Schedule values in CourseOfferings
+
 ```sql
--- Fall semester
+Fall semester
 UPDATE CourseOfferings
 SET Schedule = 'Tue/Thu 11:00-12:30,202,2025'
 WHERE Schedule IS NULL AND Semester = 'Fall';
 
--- Summer semester
+Summer semester
 UPDATE CourseOfferings
 SET Schedule = 'Mon 13:00-14:30,303,2023'
 WHERE Schedule IS NULL AND Semester = 'Summer';
 
--- Spring semester
+Spring semester
 UPDATE CourseOfferings
 SET Schedule = 'Mon 13:00-14:30,303,2023'
 WHERE Schedule IS NULL AND Semester = 'Spring';
@@ -1134,20 +1135,103 @@ ORDER BY
 ![Question 6](Student Course Registration System Report/Asset/Image/Enroll.jpg)
 
 
-
 #### C) Update and Maintain Data
 
 - **Question 7**: Update a student’s major.
 
+```sql
+UPDATE Students
+SET Major = 'Biochemistry'
+WHERE StudentID = 1;
+```
+<style>
+.image-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.image-container img {
+    width: 300px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: zoom-in;
+}
+
+.image-container img:hover {
+    transform: scale(1.2);
+    z-index: 10;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+</style>
+
+<div class="image-container">
+  <img src="Student Course Registration System Report/Asset/Image/Before update.jpg" alt="Before Update">
+  <img src="Student Course Registration System Report/Asset/Image/After update.jpg" alt="After Update">
+</div>
+
 - **Question 8**: Assign grades to students post-semester.
+
+```sql
+UPDATE Enrollments
+SET Grade = 'A'
+WHERE StudentID = 163
+  AND OfferingID = 196;
+```
+
+<style>
+.image-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.image-container img {
+    width: 300px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: zoom-in;
+}
+
+.image-container img:hover {
+    transform: scale(1.2);
+    z-index: 10;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+</style>
+
+<div class="image-container">
+  <img src="Student Course Registration System Report/Asset/Image/B-Grade.jpg" alt="Before Update Grade">
+  <img src="Student Course Registration System Report/Asset/Image/A-Grade.jpg" alt="After Update Grade">
+</div>
 
 - **Question 9**: Drop a student from a course.
 
+```sql
+
+```
+
 ### 7. Optional: Create SQL Views for Abstraction
+
+```sql
+
+```
 
 - Build virtual tables (views) for simplified access to complex joins, such as:
 
 - **Question 10**: StudentTranscriptView
+
+```sql
+
+```
 
 - **Question 4**: InstructorScheduleView
 
