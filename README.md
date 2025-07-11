@@ -778,6 +778,7 @@ WHERE Schedule IS NULL AND Semester = 'Spring';
 ```
 
 - Update NULL Grade values in Enrollments
+  
 ```sql
 UPDATE Enrollments
 SET Grade = 'B'
@@ -785,7 +786,9 @@ WHERE Grade IS NULL;
 ```
 
 - Update NULL Major values in Students
-  **Note**: Since there is no logic to differentiate between assigning "Physics" or "Math", we'll randomly assign one of them using a SQL trick (if you want all to be "Physics" or "Math")
+
+**Note**: Since there is no logic to differentiate between assigning "Physics" or "Math", we'll randomly assign one of them using a SQL trick (if you want all to be "Physics" or "Math")
+
 ```sql
 UPDATE Students
 SET Major = 
@@ -797,6 +800,7 @@ WHERE Major IS NULL;
 ```
 
 - Update NULL Phone values in Students
+
 ```sql
 UPDATE Students
 SET Phone = '000-000-0000'
@@ -804,6 +808,7 @@ WHERE Phone IS NULL;
 ```
 
 - Data cleaning complete Check.
+
   ```sql
 SELECT
     COUNT(*) AS TotalRows,
@@ -1040,6 +1045,7 @@ ORDER BY
 #### b) Administrative Queries
 
 - **Question 4**: List all courses offered in a department in a given semester.
+
 ```sql
 SELECT
     C.CourseID,
@@ -1077,9 +1083,31 @@ ORDER BY
     C.CourseID;
 ```
 
-![]()
+![Question 4](Student Course Registration System Report/Asset/Image/List.jpg)
 
 - **Question 5**: Generate instructor-wise course loads per semester.
+  
+```sql
+SELECT
+    I.InstructorID,
+    I.FirstName,
+    I.LastName,
+    CO.Semester,
+    COUNT(CO.OfferingID) AS CoursesTaught
+FROM
+    Instructors I
+JOIN CourseOfferings CO ON I.InstructorID = CO.InstructorID
+GROUP BY
+    I.InstructorID,
+    I.FirstName,
+    I.LastName,
+    CO.Semester
+ORDER BY
+    CO.Semester,
+    I.LastName,
+    I.FirstName;
+```
+![Question 5](Student Course Registration System Report/Asset/Image/Coursetaught.jpg)
 
 - **Question 6**: Find under-enrolled offerings (less than 5 students).
 
