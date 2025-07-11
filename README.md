@@ -902,7 +902,7 @@ SELECT
 FROM Prerequisites;
 ```
 
-![Data cleaning check](Student Course Registration System Report/Asset/Image/data cleaning.jpg)
+![Data cleaning check](Student Course Registration System Report/Asset/Image/clean data.jpg)
 
 
 ### 6. Querying, Data Integrity, and Business Logic
@@ -1039,27 +1039,65 @@ ORDER BY
 
 #### b) Administrative Queries
 
-- List all courses offered in a department in a given semester.
+- **Question 4**: List all courses offered in a department in a given semester.
+```sql
+SELECT
+    C.CourseID,
+    C.Title AS CourseTitle,
+    C.Department,
+    CO.OfferingID,
+    CO.Semester
+FROM 
+    Courses C 
+INNER JOIN CourseOfferings CO  
+    ON C.CourseID = CO.CourseID
+ORDER BY
+    CO.Semester,
+    C.Department,
+    C.CourseID;
 
-- Generate instructor-wise course loads per semester.
+--list courses base on condition (department and semester)
 
-- Find under-enrolled offerings (less than 5 students).
+SELECT
+    C.CourseID,
+    C.Title AS CourseTitle,
+    C.Department,
+    CO.OfferingID,
+    CO.Semester
+FROM 
+    Courses C 
+INNER JOIN CourseOfferings CO  
+    ON C.CourseID = CO.CourseID
+WHERE
+    C.Department = 'Biology' -- Replace with desired department
+    AND CO.Semester = 'Spring'     -- Replace with desired semester
+ORDER BY
+    CO.Semester,
+    C.Department,
+    C.CourseID;
+```
+
+![]()
+
+- **Question 5**: Generate instructor-wise course loads per semester.
+
+- **Question 6**: Find under-enrolled offerings (less than 5 students).
 
 #### C) Update and Maintain Data
 
-- Update a student’s major.
+- **Question 7**: Update a student’s major.
 
-- Assign grades to students post-semester.
+- **Question 8**: Assign grades to students post-semester.
 
-- Drop a student from a course.
+- **Question 9**: Drop a student from a course.
 
 ### 7. Optional: Create SQL Views for Abstraction
 
 - Build virtual tables (views) for simplified access to complex joins, such as:
 
-- StudentTranscriptView
+- **Question 10**: StudentTranscriptView
 
-- InstructorScheduleView
+- **Question 4**: InstructorScheduleView
 
 ### 8. Reflect on Data Cleaning Needs
 
