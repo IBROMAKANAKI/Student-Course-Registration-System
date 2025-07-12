@@ -1594,6 +1594,13 @@ ORDER BY AvgGPA DESC;
 
 ```
 
+| Semester | AvgGPA   |
+|----------|----------|
+| Summer   | 2.400000 |
+| Fall     | 2.290000 |
+| Spring   | 2.120000 |
+
+
 - ***How many students are majoring in each department?**
   
 ```sql
@@ -1604,13 +1611,20 @@ FROM
     Students
 GROUP BY Major
 ORDER BY TotalStudents DESC;
-
 ```
+
+| Major        | TotalStudents |
+|--------------|----------------|
+| Math         | 165            |
+| Physics      | 127            |
+| Biology      | 110            |
+| CS           | 97             |
+| Biochemistry | 1              |
 
 - ***Which students have taken the most courses?**
 
 ```sql
-SELECT 
+SELECT Top 6 
     S.StudentID,
     S.FirstName,
     S.LastName,
@@ -1622,58 +1636,54 @@ GROUP BY S.StudentID, S.FirstName, S.LastName
 ORDER BY CoursesTaken DESC;
 ```
 
-- ***What is the pass/fail rate per course?**
+| StudentID | FirstName | LastName | CoursesTaken |
+|-----------|-----------|----------|---------------|
+| 26        | Fiona     | Jones    | 5             |
+| 323       | Diana     | Jones    | 5             |
+| 330       | Hannah    | Jones    | 4             |
+| 216       | Edward    | Williams | 4             |
+| 359       | Alice     | Jones    | 4             |
+| 466       | George    | Johnson  | 4             |
 
-```sql
-SELECT 
-    C.CourseID,
-    C.Title,
-    SUM(CASE WHEN E.Grade IN ('A','A-','B+','B','B-','C+','C','C-','D') THEN 1 ELSE 0 END) AS Passes,
-    SUM(CASE WHEN E.Grade = 'F' THEN 1 ELSE 0 END) AS Fails,
-    COUNT(*) AS Total,
-    ROUND(SUM(CASE WHEN E.Grade = 'F' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS FailRatePercentage
-FROM 
-    Courses C
-JOIN CourseOfferings CO ON C.CourseID = CO.CourseID
-JOIN Enrollments E ON CO.OfferingID = E.OfferingID
-GROUP BY C.CourseID, C.Title
-ORDER BY FailRatePercentage DESC;
-```
-
-
-- ***for each semester and each course, the total number of students who passed and failed.**
-
-```sql
-SELECT
-    CO.Semester,
-    C.CourseID,
-    C.Title AS CourseTitle,
-    
-    -- Count of students who passed
-    SUM(CASE WHEN E.Grade IN ('A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D') THEN 1 ELSE 0 END) AS PassedStudents,
-    
-    -- Count of students who failed
-    SUM(CASE WHEN E.Grade = 'F' THEN 1 ELSE 0 END) AS FailedStudents
-
-FROM Enrollments E
-JOIN CourseOfferings CO ON E.OfferingID = CO.OfferingID
-JOIN Courses C ON CO.CourseID = C.CourseID
-
-GROUP BY
-    CO.Semester,
-    C.CourseID,
-    C.Title
-
-ORDER BY
-    CO.Semester,
-    C.Title;
-```
 
 ## Challenges and Limitations
 
-- Manually generating realistic data
+### Data Quality Issues
 
-- Handling large CSV imports with null/duplicate values
+- Missing Values: Some records had incomplete data (e.g., NULL values in key fields).
+
+- Inconsistent Formats: Dates, text fields, and identifiers were not uniformly formatted.
+
+- Duplicates: Manual data generation sometimes led to unintentional duplicate entries.
+
+### Manual Data Generation
+
+- Creating realistic but synthetic data was time-consuming and prone to errors.
+
+- Balancing data distributions (e.g., students per course) required extra attention.
+
+### SQL Limitations
+
+- SQL lacks native support for complex statistical operations or deep analytical processing.
+
+- String manipulation (e.g., extracting data from Schedule strings) can be tedious and error-prone.
+
+### Error Handling in Bulk Inserts
+
+- Bulk loading CSVs into SQL often raised conversion issues due to:
+
+- Quoted numbers
+
+- Special characters or BOM
+
+- Data type mismatches (e.g., trying to insert text into INT fields)
+
+### Database Design Constraints
+
+- Deciding between normalization and performance trade-offs.
+
+- Managing foreign key relationships during inserts and deletes.
+
 
 ## Conclusion
 Summarize what you achieved, what went well, and what could be improved.
