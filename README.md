@@ -1425,7 +1425,7 @@ FROM Enrollments E;
 ```
 ![Average GPA Across All Students](Student Course Registration System Report/Asset/Image/AverageGPA.jpg)
 
-- ***Department with Highest Enrollment and GPA**
+- **Department with Highest Enrollment and GPA**
 ```sql
 SELECT TOP 1
     C.Department,
@@ -1453,7 +1453,7 @@ ORDER BY TotalEnrollments DESC;
 ```
 ![Department with Highest Enrollment and GPA](Student Course Registration System Report/Asset/Image/Dep.jpg)
 
-- ***Percentage of Under-Enrolled Offerings per Semester**
+- **Percentage of Under-Enrolled Offerings per Semester**
 
 ```sql
 WITH OfferingCounts AS (
@@ -1503,7 +1503,7 @@ ORDER BY UnderEnrolledPercentage DESC;
 | Fall     | 163              | 56             | 34.36%              |
 
 
-- ***Percentage of Under-Enrolled Offerings per Semester**
+- **Percentage of Under-Enrolled Offerings per Semester**
 
 ```sql
 SELECT 
@@ -1522,7 +1522,7 @@ ORDER BY TotalCredits DESC;
 | CS         | 304         |
 | Physics    | 269         |
 
-- ***Which course has the highest enrollment?**
+- **Which course has the highest enrollment?**
   
 ```sql
 SELECT Top 3
@@ -1543,7 +1543,7 @@ ORDER BY TotalEnrolled DESC;
 | 74       | Course Title 74   | 10             |
 | 336      | Course Title 336  | 10             |
 
-- ***Which instructors have taught the most students overall?**
+- **Which instructors have taught the most students overall?**
 
 ```sql
 SELECT TOP 6
@@ -1570,7 +1570,7 @@ GROUP BY I.InstructorID, I.FirstName,
 
 
 
-- ***Which semesters had the highest average GPA?**
+- **Which semesters had the highest average GPA?**
 
 ```sql
 SELECT 
@@ -1605,7 +1605,7 @@ ORDER BY AvgGPA DESC;
 | Spring   | 2.120000 |
 
 
-- ***How many students are majoring in each department?**
+- **How many students are majoring in each department?**
   
 ```sql
 SELECT 
@@ -1626,7 +1626,7 @@ ORDER BY TotalStudents DESC;
 | Biochemistry | 1              |
 
 
-- ***Which students have taken the most courses?**
+- **Which students have taken the most courses?**
 
 ```sql
 SELECT Top 6 
