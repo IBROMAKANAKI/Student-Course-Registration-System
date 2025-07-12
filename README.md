@@ -98,6 +98,7 @@ Write SQL queries to:
 | **Prerequisites**   | Courses that must be completed before enrolling in another course. | CourseID, PrerequisiteID                               |
 
 
+
   1. Students ↔ Enrollments
      Type: One-to-Many
      Explanation: A single student can enroll in multiple course offerings, but each enrollment record refers to only one student.
@@ -123,6 +124,7 @@ Write SQL queries to:
      Explanation: A course can have multiple prerequisites, and a course can be a prerequisite for multiple other courses.
      Implementation: Prerequisites table acts as a bridge with composite keys CourseID and PrerequisiteID.
      
+     
 
 | Relationship                     | Cardinality | Description                                                   |
 | -------------------------------- | ----------- | ------------------------------------------------------------- |
@@ -141,9 +143,7 @@ Write SQL queries to:
 
 #### Data understanding
   
-  To simulate a realistic environment for the Student Course Registration System, synthetic data was manually generated for each table. Each table contains 500 rows, designed to include various data quality challenges such as null values, empty cells, and duplicates, 
-  which reflect real-world database inconsistencies and provide a solid foundation for data integrity enforcement and validation through SQL.
-  Below is a breakdown of each table, its key attributes, and its structure:
+To simulate a realistic environment for the Student Course Registration System, synthetic data was manually generated for each table. Each table contains 500 rows, designed to include various data quality challenges such as null values, empty cells, and duplicates,  which reflect real-world database inconsistencies and provide a solid foundation for data integrity enforcement and validation through SQL. Below is a breakdown of each table, its key attributes, and its structure:
   
 
   | Table Name       | Number of Rows | Number of Columns  |  Key Columns                                                  |
@@ -227,8 +227,6 @@ The central fact table connects directly to multiple denormalized dimension tabl
            [CourseOfferings]
 
 </div>
-
-
 
 #### 2. Snowflake Schema
 
@@ -751,7 +749,9 @@ SELECT
 
 FROM Prerequisites;
 ```
+
 ![Total nulls in each table](Student Course Registration System Report/Asset/Image/column nulls.jpg)
+
 
 | **Table**         | **Column**    | **NULL Count** | **Remarks**                         |
 | ----------------- | ------------- | -------------- | ----------------------------------- |
@@ -857,7 +857,7 @@ WHERE Phone IS NULL;
 
 - Data cleaning complete Check.
 
-  ```sql
+```sql
 SELECT
     COUNT(*) AS TotalRows,
     
@@ -954,6 +954,7 @@ SELECT
 
 FROM Prerequisites;
 ```
+
 ![Data cleaning check](Student Course Registration System Report/Asset/Image/clean data.jpg)
 
 
@@ -1556,7 +1557,9 @@ JOIN CourseOfferings CO ON I.InstructorID = CO.InstructorID
 JOIN Enrollments E ON CO.OfferingID = E.OfferingID
 GROUP BY I.InstructorID, I.FirstName, 
 ```
-| InstructorID | FirstName | LastName | TotalStudenttauhjt |
+
+
+| InstructorID | FirstName | LastName | TotalStudenttauhjt  |
 |--------------|-----------|----------|---------------------|
 | 493          | Jane      | Young    | 8                   |
 | 327          | Jane      | Lee      | 6                   |
@@ -1564,6 +1567,7 @@ GROUP BY I.InstructorID, I.FirstName,
 | 220          | Sara      | Lee      | 5                   |
 | 314          | John      | Hall     | 5                   |
 | 325          | Mike      | Young    | 5                   |
+
 
 
 - ***Which semesters had the highest average GPA?**
@@ -1620,6 +1624,7 @@ ORDER BY TotalStudents DESC;
 | Biology      | 110            |
 | CS           | 97             |
 | Biochemistry | 1              |
+
 
 - ***Which students have taken the most courses?**
 
@@ -1686,7 +1691,8 @@ ORDER BY CoursesTaken DESC;
 
 
 ## Conclusion
-Summarize what you achieved, what went well, and what could be improved.
+
+This SQL-based academic data analysis project successfully explored a wide range of educational metrics using a structured and normalized database design. Through careful schema creation, realistic data population, and advanced SQL querying, we extracted meaningful insights that reflect real-world scenarios in academic institutions. Average GPA Across All Students stood at approximately 2.27, indicating moderate academic performance.The Biology Department had the highest total course credits (345) and enrollments, showing strong student interest. Course ID 97 emerged as the most enrolled course, while Jane Young was the most active instructor by number of students taught. The Summer semester had the highest average GPA (2.4), while Spring showed a slightly lower academic performance. We identified that 35–38% of offerings per semester were under-enrolled, which can inform course planning and resource allocation. The Math major attracted the most students (165), indicating high demand for quantitative disciplines. Top-performing students like Fiona Jones and Diana Jones were enrolled in 5 or more courses, reflecting strong academic engagement. Despite several challenges, including manual data generation, data cleaning, and SQL limitations in handling complex logic or string processing, the project demonstrated the power of relational databases in storing, managing, and analyzing institutional data. This project underscores the importance of structured data, effective schema design, and analytical SQL skills in deriving insights that support decision-making in academic environments.
 
 ## Future Work / Recommendations
 
