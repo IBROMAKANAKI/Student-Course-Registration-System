@@ -1450,7 +1450,224 @@ JOIN Courses C ON CO.CourseID = C.CourseID
 GROUP BY C.Department
 ORDER BY TotalEnrollments DESC;
 ```
-![Department with Highest Enrollment and GPA]()
+![Department with Highest Enrollment and GPA](Student Course Registration System Report/Asset/Image/Dep.jpg)
+
+- ***Percentage of Under-Enrolled Offerings per Semester**
+
+```sql
+WITH OfferingCounts AS (
+    SELECT 
+        CO.OfferingID,
+        CO.Semester,
+        COUNT(E.StudentID) AS EnrollmentCount
+    FROM CourseOfferings CO
+    LEFT JOIN Enrollments E ON CO.OfferingID = E.OfferingID
+    GROUP BY CO.OfferingID, CO.Semester
+),
+AverageEnrollment AS (
+    SELECT 
+        AVG(EnrollmentCount * 1.0) AS AvgEnrollment
+    FROM OfferingCounts
+),
+UnderEnrolledSemesters AS (
+    SELECT 
+        Semester,
+        COUNT(*) AS UnderEnrolled
+    FROM OfferingCounts, AverageEnrollment
+    WHERE EnrollmentCount < AvgEnrollment
+    GROUP BY Semester
+),
+TotalSemesters AS (
+    SELECT 
+        Semester,
+        COUNT(*) AS TotalOfferings
+    FROM OfferingCounts
+    GROUP BY Semester
+)
+SELECT 
+    T.Semester,
+    T.TotalOfferings,
+    U.UnderEnrolled,
+    ROUND((U.UnderEnrolled * 100.0) / T.TotalOfferings, 2) AS UnderEnrolledPercentage
+FROM TotalSemesters T
+LEFT JOIN UnderEnrolledSemesters U ON T.Semester = U.Semester
+ORDER BY UnderEnrolledPercentage DESC;
+```
+![Percentage of Under-Enrolled Offerings per Semester](Student Course Registration System Report/Asset/Image/high.jpg)
+
+| Semester | Total Offerings | Under-Enrolled | Under-Enrolled (%) |
+|----------|------------------|----------------|---------------------|
+| Summer   | 148              | 56             | 37.84%              |
+| Spring   | 189              | 69             | 36.51%              |
+| Fall     | 163              | 56             | 34.36%              |
+
+
+- ***Percentage of Under-Enrolled Offerings per Semester**
+
+```sql
+SELECT 
+    Department,
+    SUM(C.Credits) AS TotalCredits
+FROM 
+    Courses C
+GROUP BY Department
+ORDER BY TotalCredits DESC;
+```
+
+| Department | TotalCredit |
+|------------|-------------|
+| Biology    | 345         |
+| Math       | 323         |
+| CS         | 304         |
+| Physics    | 269         |
+
+- ***Which course has the highest enrollment?**
+  
+```sql
+SELECT Top 3
+    C.CourseID,
+    C.Title,
+    COUNT(E.StudentID) AS TotalEnrolled
+FROM 
+    Courses C
+JOIN CourseOfferings CO ON C.CourseID = CO.CourseID
+JOIN Enrollments E ON CO.OfferingID = E.OfferingID
+GROUP BY C.CourseID, C.Title
+ORDER BY TotalEnrolled DESC;
+```
+
+| CourseID | Title             | TotalEnrolled |
+|----------|-------------------|----------------|
+| 97       | Course Title 97   | 14             |
+| 74       | Course Title 74   | 10             |
+| 336      | Course Title 336  | 10             |
+
+- ***Which instructors have taught the most students overall?**
+
+```sql
+SELECT TOP 6
+    I.InstructorID,
+    I.FirstName,
+    I.LastName,
+    COUNT(E.StudentID) AS TotalStudentsTaught
+FROM 
+    Instructors I
+JOIN CourseOfferings CO ON I.InstructorID = CO.InstructorID
+JOIN Enrollments E ON CO.OfferingID = E.OfferingID
+GROUP BY I.InstructorID, I.FirstName, 
+```
+| InstructorID | FirstName | LastName | TotalStudenttauhjt |
+|--------------|-----------|----------|---------------------|
+| 493          | Jane      | Young    | 8                   |
+| 327          | Jane      | Lee      | 6                   |
+| 198          | John      | Lee      | 5                   |
+| 220          | Sara      | Lee      | 5                   |
+| 314          | John      | Hall     | 5                   |
+| 325          | Mike      | Young    | 5                   |
+
+
+- ***Which semesters had the highest average GPA?**
+
+```sql
+SELECT 
+    CO.Semester,
+    ROUND(SUM(
+        CASE E.Grade
+            WHEN 'A'  THEN 4.0
+            WHEN 'A-' THEN 3.7
+            WHEN 'B+' THEN 3.3
+            WHEN 'B'  THEN 3.0
+            WHEN 'B-' THEN 2.7
+            WHEN 'C+' THEN 2.3
+            WHEN 'C'  THEN 2.0
+            WHEN 'C-' THEN 1.7
+            WHEN 'D'  THEN 1.0
+            WHEN 'F'  THEN 0.0
+        END * C.Credits
+    ) / SUM(C.Credits), 2) AS AvgGPA
+FROM 
+    CourseOfferings CO
+JOIN Enrollments E ON CO.OfferingID = E.OfferingID
+JOIN Courses C ON CO.CourseID = C.CourseID
+GROUP BY CO.Semester
+ORDER BY AvgGPA DESC;
+
+```
+
+- ***How many students are majoring in each department?**
+  
+```sql
+SELECT 
+    Major,
+    COUNT(*) AS TotalStudents
+FROM 
+    Students
+GROUP BY Major
+ORDER BY TotalStudents DESC;
+
+```
+
+- ***Which students have taken the most courses?**
+
+```sql
+SELECT 
+    S.StudentID,
+    S.FirstName,
+    S.LastName,
+    COUNT(E.EnrollmentID) AS CoursesTaken
+FROM 
+    Students S
+JOIN Enrollments E ON S.StudentID = E.StudentID
+GROUP BY S.StudentID, S.FirstName, S.LastName
+ORDER BY CoursesTaken DESC;
+```
+
+- ***What is the pass/fail rate per course?**
+
+```sql
+SELECT 
+    C.CourseID,
+    C.Title,
+    SUM(CASE WHEN E.Grade IN ('A','A-','B+','B','B-','C+','C','C-','D') THEN 1 ELSE 0 END) AS Passes,
+    SUM(CASE WHEN E.Grade = 'F' THEN 1 ELSE 0 END) AS Fails,
+    COUNT(*) AS Total,
+    ROUND(SUM(CASE WHEN E.Grade = 'F' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS FailRatePercentage
+FROM 
+    Courses C
+JOIN CourseOfferings CO ON C.CourseID = CO.CourseID
+JOIN Enrollments E ON CO.OfferingID = E.OfferingID
+GROUP BY C.CourseID, C.Title
+ORDER BY FailRatePercentage DESC;
+```
+
+
+- ***for each semester and each course, the total number of students who passed and failed.**
+
+```sql
+SELECT
+    CO.Semester,
+    C.CourseID,
+    C.Title AS CourseTitle,
+    
+    -- Count of students who passed
+    SUM(CASE WHEN E.Grade IN ('A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D') THEN 1 ELSE 0 END) AS PassedStudents,
+    
+    -- Count of students who failed
+    SUM(CASE WHEN E.Grade = 'F' THEN 1 ELSE 0 END) AS FailedStudents
+
+FROM Enrollments E
+JOIN CourseOfferings CO ON E.OfferingID = CO.OfferingID
+JOIN Courses C ON CO.CourseID = C.CourseID
+
+GROUP BY
+    CO.Semester,
+    C.CourseID,
+    C.Title
+
+ORDER BY
+    CO.Semester,
+    C.Title;
+```
 
 ## Challenges and Limitations
 
