@@ -3,16 +3,44 @@
 </p>
 <h1 align="center">SALAWUDEEN IBRAHIM</h1>
 
+# Table of Contents
+
+- [Project Introduction](#project-introduction)
+- [Aim](#aim)
+- [Problem Statement](#problem-statement)
+- [Methodology](#methodology)
+  - [Schema Design Using ER Diagrams](#schema-design-using-er-diagrams)
+  - [SQL Implementation](#sql-implementation)
+  - [Manual Data Generation](#manual-data-generation)
+  - [Query Writing for Analysis](#query-writing-for-analysis)
+- [Objectives](#objectives)
+  - [Analyze the Problem Domain](#analyze-the-problem-domain)
+  - [Identify Key Entities](#identify-key-entities)
+- [Data Understanding](#data-understanding)
+- [Design an ERD (Entity-Relationship Diagram)](#design-an-erd-entity-relationship-diagram)
+  - [Star Schema](#star-schema)
+  - [Snowflake Schema](#snowflake-schema)
+  - [Implement the Relational Schema in SQL](#implement-the-relational-schema-in-sql)
+- [Database Setup Using SQL](#database-setup-using-sql)
+- [Simulate Real-World Data Challenges](#simulate-real-world-data-challenges)
+- [Data Cleaning](#data-cleaning)
+- [Querying, Data Integrity, and Business Logic](#querying-data-integrity-and-business-logic)
+- [Key Insight](#key-insight)
+- [Challenges and Limitations](#challenges-and-limitations)
+- [Conclusion](#conclusion)
+- [Future Work / Recommendations](#future-work--recommendations)
+
+
 <h2 align="center">Project Introduction</h2>
 
 This project presents the **design** and **implementation of a Student Course Registration System using a relational database model**. It aims to simulate how a fictional university manages student registrations, course offerings, instructor assignments, prerequisites, and academic records. The system is built entirely with **SQL**, covering schema design, table creation, constraints enforcement, and data manipulation.
 
 To reflect real-world scenarios, the dataset includes **manually generated dummy data featuring null values, empty fields, and duplicate entries, enabling a realistic environment for practicing data analysis and integrity checks**. Core components of the project include an **Entity-Relationship Diagram (ERD)**, **SQL scripts for database creation**, **sample data population**, and **practical query operations**. The project emphasizes **data integrity**, **normalization, and the use of SQL for efficient information retrieval and validation**, making it a strong foundation for understanding database systems in academic or enterprise environments.
 
-## 🎯 Aim
+# Aim
 To design and implement a robust relational database system that effectively manages student registrations, course offerings, instructor assignments, and academic performance, while simulating real-world data scenarios involving missing values, nulls, and duplicate records, using SQL for data modeling, manipulation, and analysis.
 
-## 🧩 Problem Statement
+# Problem Statement
 Modern universities manage thousands of students, courses, instructors, and class enrollments each semester. Without a centralized system, tracking course offerings, managing student registrations, assigning instructors, and recording grades becomes inefficient and error-prone. This project aims to design and implement a relational database that addresses these challenges by providing a structured way to:
 
 - Store and manage student information.
@@ -25,10 +53,10 @@ Modern universities manage thousands of students, courses, instructors, and clas
 
 - Handle student course registrations and grades.
 
-## 📌 Methodology
+# Methodology
 For this SQL project, this include:
 
-### Schema design using ER diagrams
+## Schema design using ER diagrams
 
 - Identify key entities (e.g., Students, Courses, Instructors).
 
@@ -40,7 +68,7 @@ For this SQL project, this include:
 
 - ERDs help avoid redundancy and ensure normalization.
 
-### SQL implementation (CREATE, INSERT, SELECT, etc.)
+## SQL implementation
 Convert the ERD into SQL code using:
 
 - CREATE TABLE to define structure.
@@ -51,7 +79,7 @@ Convert the ERD into SQL code using:
 
 - Run SELECT, UPDATE, DELETE, and JOIN queries to interact with data.
 
-### Manual data generation (including nulls, duplicates)
+## Manual data generation
 Generate sample data to simulate real-world scenarios.
 
 - Introduce:
@@ -62,7 +90,7 @@ Generate sample data to simulate real-world scenarios.
 
 - Insert both valid and edge-case values to verify data behavior.
 
-### Query writing for analysis
+## Query writing for analysis
 Write SQL queries to:
 
 - Analyze student grades, course offerings, instructor schedules.
@@ -82,11 +110,11 @@ Write SQL queries to:
     B --> C[Manual Data Generation]
     C --> D[Query Writing & Analysis]
 
-## ✅ Objectives
+# Objectives
 
-### 1. Analyze the Problem Domain
+## Analyze the Problem Domain
 
-#### Identify key entities (e.g., Students, Courses, Enrollments) and define their relationships and data requirements.
+### Identify key entities
   
   | Entity              | Description                                                        | Key Attributes                                       |
 | ------------------- | ------------------------------------------------------------------ | ------------------------------------------------------ |
@@ -141,7 +169,7 @@ Write SQL queries to:
 | **Student → Instructors**                   | Indirect (via CourseOfferings)                   | Students are taught by instructors assigned to course offerings they enroll in. |
 
 
-#### Data understanding
+# Data understanding
   
 To simulate a realistic environment for the Student Course Registration System, synthetic data was manually generated for each table. Each table contains 500 rows, designed to include various data quality challenges such as null values, empty cells, and duplicates,  which reflect real-world database inconsistencies and provide a solid foundation for data integrity enforcement and validation through SQL. Below is a breakdown of each table, its key attributes, and its structure:
   
@@ -204,10 +232,10 @@ To simulate a realistic environment for the Student Course Registration System, 
   }
 </script>
 
-### 2.  Design an ERD (Entity-Relationship Diagram)
+# Design an ERD (Entity-Relationship Diagram)
 An Entity-Relationship Diagram (ERD) is a visual representation of the data and relationships in a database. It helps in designing the database structure before actual implementation. They are essential for planning, communicating, and building databases efficiently and correctly.
 
-#### 1. Star Schema
+## Star Schema
 The central fact table connects directly to multiple denormalized dimension tables. Dimension tables have redundant data but simplify queries with fewer joins while using Star Schema. use If the focus is on fast querying and reporting (like analyzing student enrollments, grades, course offerings), and simpler, flatter tables.
 
 - Fact Table: Enrollments (records each registration with facts like Grade, EnrollmentDate)
@@ -228,7 +256,7 @@ The central fact table connects directly to multiple denormalized dimension tabl
 
 </div>
 
-#### 2. Snowflake Schema
+## 2. Snowflake Schema
 
 An extension of star schema where dimension tables are normalized into multiple related tables, reducing redundancy but increasing complexity and join operations. use If a more normalized structure to save storage space or maintain data integrity is needed, especially when dimension attributes have hierarchical relationships.
 
@@ -286,10 +314,13 @@ An extension of star schema where dimension tables are normalized into multiple 
 </div>
 
    
-### 3. Implement the Relational Schema in SQL
+## 3. Implement the Relational Schema in SQL
 A **database** is a structured collection of data stored in a way that makes it easy to retrieve, manage, and update. For example, a University Database might store data about students, courses, instructors, and enrollments. to Implement the Relational Schema in SQL a **database** needs to be create, then use then a table can be created.
 
-#### 1. Create database
+# Database Setup Using SQL
+Setting up a database with SQL involves creating the necessary structure to store and manage data efficiently. This typically includes the following steps:
+
+## 1. Create database
 
 ```sql
 Create database STUDENT_REG;
@@ -299,7 +330,7 @@ Use STUDENT_REG;
 
 A **table** is a fundamental unit within a database that organises data into rows and columns, much like a spreadsheet. Each table usually stores one type of data.
 
-#### 2. Create table
+## 2. Create table
 
 ```sql
 -- a) Students Table
@@ -370,7 +401,7 @@ CREATE TABLE Prerequisites (
 NVARCHAR(50): means it can store up to 50 Unicode characters, supporting different languages and characters (e.g., accented letters).
 FOREIGN KEY: A FOREIGN KEY is a constraint in SQL that creates a relationship between two tables. It ensures referential integrity
 
-#### 3. View table
+## 3. View table
 
 ```sql
 Select * from Students;
@@ -382,7 +413,7 @@ Select * from Prerequisites;
 ```
 ![View Table](Student Course Registration System Report/Asset/Image/table view.jpg)
 
-#### 4. Insert data to table
+## 4. Insert data to table
 
 ```sql
 
@@ -482,7 +513,7 @@ WITH (
 
 **CODEPAGE = '65001'**: Specifies that the file is in UTF-8 encoding. This is necessary if the CSV contains non-English characters, emojis, or accented letters.
 
-#### 5. Verify data insertion
+## 5. Verify data insertion
 
 ```sql
 SELECT TOP 3 * FROM Students;
@@ -496,11 +527,13 @@ SELECT TOP 3 * FROM Prerequisites;
 
 ![Top 3 data table](Student Course Registration System Report/Asset/Image/Top 3.jpg)
 
-### 4. Simulate Real-World Data Challenges
+# Simulate Real-World Data Challenges
+Simulating real-world data challenges is a great way to test the robustness of your SQL database and prepare for data cleaning, validation, and transformation tasks.
 
-#### 1. Data consistency enforcement
+## 1. Data consistency enforcement
+Data Consistency Enforcement in SQL ensures that all data entered into a database remains accurate, reliable, and conforms to predefined rules or business logic.
 
-##### a. Total numbers of data in each table
+### a. Total numbers of data in each table
   
 ```sql
 Select count(*) As Total_student_table_no from Students;
@@ -511,9 +544,9 @@ Select count(*) As Total_Prerequisitese_no from Prerequisites;
 ```
 ![Total number of data](Student Course Registration System Report/Asset/Image/Total number column.jpg)
 
-#### 2. Empty fields and NULL values
+## 2. Empty fields and NULL values
 
-##### a. Numbers of column in each table
+### a. Numbers of column in each table
 
 ```sql
 -- Students Table
@@ -553,7 +586,7 @@ WHERE TABLE_NAME = 'Prerequisites';
 ```
 ![Columns](Student Course Registration System Report/Asset/Image/columns.jpg)
 
-##### b. Duplicate entries
+### b. Duplicate entries
 
 No duplicate in the data after running this code.
 
@@ -650,7 +683,7 @@ FROM (
 ```
 ![Total nulls number](Student Course Registration System Report/Asset/Image/Nulls.jpg)
 
-##### c. Total number of null values and empty cells
+### c. Total number of null values and empty cells
 
 ```sql
 SELECT
@@ -764,12 +797,10 @@ FROM Prerequisites;
 | `Prerequisites`   | *All Columns* | 0              | No NULL values detected             |
 
 
-### 5. Inconsistent or edge-case values (e.g., invalid grades, blank emails)
-
-#### Data cleaning
+# Data cleaning
 Data cleaning means fixing or removing incorrect, messy, or missing data.
 
-##### a. Data Cleaning Description
+## a. Data Cleaning Description
 
 In the CourseOfferings table, there are 113 missing values in the Schedule column. These missing entries are filled based on the Semester:
 
@@ -804,7 +835,7 @@ In the Students table:
 | Students        | Phone    | 124        | `"000-000-0000"`                            |
 
 
-##### b. Data cleaning steps
+## b. Data cleaning steps
 
 - Update NULL Schedule values in CourseOfferings
 
@@ -958,9 +989,10 @@ FROM Prerequisites;
 ![Data cleaning check](Student Course Registration System Report/Asset/Image/clean data.jpg)
 
 
-### 6. Querying, Data Integrity, and Business Logic
+# Querying, Data Integrity, and Business Logic
+Querying is the process of retrieving or manipulating data stored in a database using SQL. Ensures the accuracy, consistency, and reliability of data in the database. Business logic represents the rules and procedures that define how data is created, stored, and changed according to business requirements.
 
-#### A) Student Services Queries
+## A) Student Services Queries
 
 - **Question 1**: Retrieve all courses a student is enrolled in for a given semester.
 
@@ -1090,7 +1122,7 @@ ORDER BY
 ![Question 3](Student Course Registration System Report/Asset/Image/Question 3.jpg)
 
 
-#### B) Administrative Queries
+## B) Administrative Queries
 
 - **Question 4**: List all courses offered in a department in a given semester.
 
@@ -1183,7 +1215,7 @@ ORDER BY
 ![Question 6](Student Course Registration System Report/Asset/Image/Enroll.jpg)
 
 
-#### C) Update and Maintain Data
+## C) Update and Maintain Data
 
 - **Question 7**: Update a student’s major.
 
@@ -1298,7 +1330,7 @@ WHERE StudentID = 386 AND OfferingID = 105;
   <img src="Student Course Registration System Report/Asset/Image/After_Delete.jpg" alt="After Delete">
 </div>
 
-### 7. Optional: Create SQL Views for Abstraction
+## Optional: Create SQL Views for Abstraction
 
 - **Question 10**: StudentTranscriptView (Combines student, course, and grade info with GPA)
 
@@ -1400,7 +1432,7 @@ JOIN Courses C ON CO.CourseID = C.CourseID;
 ```
 ![Instructor View](Student Course Registration System Report/Asset/Image/Instructor_View.jpg)
 
-## Key Insight
+# Key Insight
 
 - **Average GPA Across All Students**
 
@@ -1651,9 +1683,9 @@ ORDER BY CoursesTaken DESC;
 | 466       | George    | Johnson  | 4             |
 
 
-## Challenges and Limitations
+# Challenges and Limitations
 
-### Data Quality Issues
+## Data Quality Issues
 
 - Missing Values: Some records had incomplete data (e.g., NULL values in key fields).
 
@@ -1661,19 +1693,19 @@ ORDER BY CoursesTaken DESC;
 
 - Duplicates: Manual data generation sometimes led to unintentional duplicate entries.
 
-### Manual Data Generation
+## Manual Data Generation
 
 - Creating realistic but synthetic data was time-consuming and prone to errors.
 
 - Balancing data distributions (e.g., students per course) required extra attention.
 
-### SQL Limitations
+## SQL Limitations
 
 - SQL lacks native support for complex statistical operations or deep analytical processing.
 
 - String manipulation (e.g., extracting data from Schedule strings) can be tedious and error-prone.
 
-### Error Handling in Bulk Inserts
+## Error Handling in Bulk Inserts
 
 - Bulk loading CSVs into SQL often raised conversion issues due to:
 
@@ -1683,18 +1715,18 @@ ORDER BY CoursesTaken DESC;
 
 - Data type mismatches (e.g., trying to insert text into INT fields)
 
-### Database Design Constraints
+## Database Design Constraints
 
 - Deciding between normalization and performance trade-offs.
 
 - Managing foreign key relationships during inserts and deletes.
 
 
-## Conclusion
+# Conclusion
 
 This SQL-based academic data analysis project successfully explored a wide range of educational metrics using a structured and normalized database design. Through careful schema creation, realistic data population, and advanced SQL querying, we extracted meaningful insights that reflect real-world scenarios in academic institutions. Average GPA Across All Students stood at approximately 2.27, indicating moderate academic performance.The Biology Department had the highest total course credits (345) and enrollments, showing strong student interest. Course ID 97 emerged as the most enrolled course, while Jane Young was the most active instructor by number of students taught. The Summer semester had the highest average GPA (2.4), while Spring showed a slightly lower academic performance. We identified that 35–38% of offerings per semester were under-enrolled, which can inform course planning and resource allocation. The Math major attracted the most students (165), indicating high demand for quantitative disciplines. Top-performing students like Fiona Jones and Diana Jones were enrolled in 5 or more courses, reflecting strong academic engagement. Despite several challenges, including manual data generation, data cleaning, and SQL limitations in handling complex logic or string processing, the project demonstrated the power of relational databases in storing, managing, and analyzing institutional data. This project underscores the importance of structured data, effective schema design, and analytical SQL skills in deriving insights that support decision-making in academic environments.
 
-## Future Work / Recommendations
+# Future Work / Recommendations
 
 - Integrate with front-end UI
 
