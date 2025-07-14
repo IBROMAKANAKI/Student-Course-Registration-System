@@ -1,0 +1,1159 @@
+Create database STUDENT_REG;
+Use STUDENT_REG;
+
+-- a) Students Table
+CREATE TABLE Students (
+    StudentID INT PRIMARY KEY,
+    FirstName NVARCHAR(50),
+    LastName NVARCHAR(50),
+    Email NVARCHAR(100),
+    Phone NVARCHAR(20),
+    Major NVARCHAR(100),
+    Year NVARCHAR(20) CHECK (Year IN ('Year 1', 'Year 2', 'Year 3', 'Year 4'))
+);
+
+-- b) Courses Table
+CREATE TABLE Courses (
+    CourseID INT PRIMARY KEY,
+    CourseCode NVARCHAR(15),
+    Title NVARCHAR(150),
+    Credits INT CHECK (Credits > 0),
+    Department NVARCHAR(150)
+);
+
+-- c) Instructors Table
+CREATE TABLE Instructors (
+    InstructorID INT PRIMARY KEY,
+    FirstName NVARCHAR(50),
+    LastName NVARCHAR(50),
+    Email NVARCHAR(100),
+    Department NVARCHAR(150)
+);
+
+-- d) CourseOfferings Table
+CREATE TABLE CourseOfferings (
+    OfferingID INT PRIMARY KEY,
+    CourseID INT,
+    Semester NVARCHAR(50),
+    InstructorID INT,
+    Schedule NVARCHAR(50),
+    FOREIGN KEY (CourseID) REFERENCES Courses(CourseID),
+    FOREIGN KEY (InstructorID) REFERENCES Instructors(InstructorID)
+);
+
+-- e) Enrollments Table
+CREATE TABLE Enrollments (
+    EnrollmentID INT PRIMARY KEY,
+    StudentID INT,
+    OfferingID INT,
+    EnrollmentDate DATE,
+    Grade CHAR(1) CHECK (Grade IN ('A', 'B', 'C', 'D', 'F') OR Grade IS NULL),
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
+    FOREIGN KEY (OfferingID) REFERENCES CourseOfferings(OfferingID)
+);
+
+-- f) Prerequisites Table
+CREATE TABLE Prerequisites (
+    CourseID INT,
+    PrerequisiteID INT,
+    PRIMARY KEY (CourseID, PrerequisiteID),
+    FOREIGN KEY (CourseID) REFERENCES Courses(CourseID),
+    FOREIGN KEY (PrerequisiteID) REFERENCES Courses(CourseID)
+);
+
+
+Select * from Students
+Select * from Courses
+Select * from CourseOfferings
+Select * from Instructors
+Select * from Enrollments
+Select * from Prerequisites
+
+
+---Student----
+
+BULK INSERT Students
+FROM "C:\Users\hp\Downloads\Students (1).csv"
+WITH (
+    FIRSTROW = 2,
+    FIELDTERMINATOR = ',',
+    ROWTERMINATOR = '0x0a', -- Unix-style line endings
+    TABLOCK,
+    KEEPNULLS,
+    CODEPAGE = '65001' -- Handles UTF-8
+);
+
+----Course------
+
+BULK INSERT Courses
+FROM "C:\Users\hp\Downloads\Courses (1).csv"
+WITH (
+    FIRSTROW = 2,
+    FIELDTERMINATOR = ',',
+    ROWTERMINATOR = '0x0a', -- Unix-style line endings
+    TABLOCK,
+    KEEPNULLS,
+    CODEPAGE = '65001' -- Handles UTF-8
+);
+
+-----Instructor---
+
+BULK INSERT Instructors
+FROM "C:\Users\hp\Downloads\Instructors (1).csv"
+WITH (
+    FIRSTROW = 2,
+    FIELDTERMINATOR = ',',
+    ROWTERMINATOR = '0x0a', -- Unix-style line endings
+    TABLOCK,
+    KEEPNULLS,
+    CODEPAGE = '65001' -- Handles UTF-8
+);
+
+
+------CourseOfferings----
+
+BULK INSERT CourseOfferings
+FROM "C:\Users\hp\Downloads\CourseOfferings (1).csv"
+WITH (
+    FIRSTROW = 2,
+    FIELDTERMINATOR = ',',
+    ROWTERMINATOR = '0x0a', -- Unix-style line endings
+    TABLOCK,
+    KEEPNULLS,
+    CODEPAGE = '65001' -- Handles UTF-8
+);
+
+-----Enrollments----
+
+BULK INSERT Enrollments
+FROM "C:\Users\hp\Downloads\Enrollments (1).csv"
+WITH (
+    FIRSTROW = 2,
+    FIELDTERMINATOR = ',',
+    ROWTERMINATOR = '0x0a', -- Unix-style line endings
+    TABLOCK,
+    KEEPNULLS,
+    CODEPAGE = '65001' -- Handles UTF-8
+);
+
+----Prerequisites------
+
+
+BULK INSERT Prerequisites
+FROM "C:\Users\hp\Downloads\Prerequisites (1).csv"
+WITH (
+    FIRSTROW = 2,
+    FIELDTERMINATOR = ',',
+    ROWTERMINATOR = '0x0a', -- Unix-style line endings
+    TABLOCK,
+    KEEPNULLS,
+    CODEPAGE = '65001' -- Handles UTF-8
+);
+
+
+--Verify data insertion--
+--This code show the first three line in each table---
+
+SELECT TOP 3 * FROM Students;
+SELECT TOP 3 * FROM Courses;
+SELECT TOP 3 * FROM CourseOfferings;
+SELECT TOP 3 * FROM Instructors;
+SELECT TOP 3 * FROM Enrollments;
+SELECT TOP 3 * FROM Prerequisites;
+
+---DATA UNDERSTANDING STEPS--
+
+---Total number of data----
+
+Select count(*) As Total_student_table_no from Students;
+Select count(*) As Total_Courses_table_no from Courses;
+Select count(*) As Total_Instructors_table_no from Instructors;
+Select count(*) As Total_CourseOfferings_table_no from CourseOfferings;
+Select count(*) As Total_Prerequisitese_no from Prerequisites;
+
+--Numbers of column in each table--
+
+-- Students Table
+SELECT 
+    COUNT(*) AS Total_Students_Columns,
+    STRING_AGG(COLUMN_NAME, ', ') AS Student_Columns
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'Students';
+
+-- Courses Table
+SELECT 
+    COUNT(*) AS Total_Courses_Columns,
+    STRING_AGG(COLUMN_NAME, ', ') AS Course_Columns
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'Courses';
+
+-- Instructors Table
+SELECT 
+    COUNT(*) AS Total_Instructors_Columns,
+    STRING_AGG(COLUMN_NAME, ', ') AS Instructor_Columns
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'Instructors';
+
+-- CourseOfferings Table
+SELECT 
+    COUNT(*) AS Total_CourseOfferings_Columns,
+    STRING_AGG(COLUMN_NAME, ', ') AS CourseOfferings_Columns
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'CourseOfferings';
+
+-- Prerequisites Table
+SELECT 
+    COUNT(*) AS Total_Prerequisites_Columns,
+    STRING_AGG(COLUMN_NAME, ', ') AS Prerequisites_Columns
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'Prerequisites';
+
+
+----Number of duplicate in each column of the table---
+
+-- Show duplicate rows and how many times they occur
+
+---Students Table – Duplicate Rows-----
+
+SELECT 
+    FirstName, LastName, Email, Phone, Major, Year,
+    COUNT(*) AS Occurrences
+FROM Students
+GROUP BY FirstName, LastName, Email, Phone, Major, Year
+HAVING COUNT(*) > 1;
+
+-- Total number of duplicate rows
+SELECT 
+    SUM(Occurrences) - COUNT(*) AS Total_Duplicates
+FROM (
+    SELECT COUNT(*) AS Occurrences
+    FROM Students
+    GROUP BY FirstName, LastName, Email, Phone, Major, Year
+    HAVING COUNT(*) > 1
+) AS Dup;
+
+
+---Courses Table – Duplicate Rows---
+
+SELECT 
+    CourseCode, Title, Credits, Department,
+    COUNT(*) AS Occurrences
+FROM Courses
+GROUP BY CourseCode, Title, Credits, Department
+HAVING COUNT(*) > 1;
+
+SELECT 
+    SUM(Occurrences) - COUNT(*) AS Total_Duplicates
+FROM (
+    SELECT COUNT(*) AS Occurrences
+    FROM Courses
+    GROUP BY CourseCode, Title, Credits, Department
+    HAVING COUNT(*) > 1
+) AS Dup;
+
+---Instructors Table – Duplicate Rows---
+
+SELECT 
+    FirstName, LastName, Email, Department,
+    COUNT(*) AS Occurrences
+FROM Instructors
+GROUP BY FirstName, LastName, Email, Department
+HAVING COUNT(*) > 1;
+
+SELECT 
+    SUM(Occurrences) - COUNT(*) AS Total_Duplicates
+FROM (
+    SELECT COUNT(*) AS Occurrences
+    FROM Instructors
+    GROUP BY FirstName, LastName, Email, Department
+    HAVING COUNT(*) > 1
+) AS Dup;
+
+
+---CourseOfferings Table – Duplicate Rows---
+
+SELECT 
+    CourseID, Semester, InstructorID, Schedule,
+    COUNT(*) AS Occurrences
+FROM CourseOfferings
+GROUP BY CourseID, Semester, InstructorID, Schedule
+HAVING COUNT(*) > 1;
+
+SELECT 
+    SUM(Occurrences) - COUNT(*) AS Total_Duplicates
+FROM (
+    SELECT COUNT(*) AS Occurrences
+    FROM CourseOfferings
+    GROUP BY CourseID, Semester, InstructorID, Schedule
+    HAVING COUNT(*) > 1
+) AS Dup;
+
+---Prerequisites Table – Duplicate Rows---
+
+SELECT 
+    CourseID, PrerequisiteID,
+    COUNT(*) AS Occurrences
+FROM Prerequisites
+GROUP BY CourseID, PrerequisiteID
+HAVING COUNT(*) > 1;
+
+SELECT 
+    SUM(Occurrences) - COUNT(*) AS Total_Duplicates
+FROM (
+    SELECT COUNT(*) AS Occurrences
+    FROM Prerequisites
+    GROUP BY CourseID, PrerequisiteID
+    HAVING COUNT(*) > 1
+) AS Dup;
+
+
+---Total number of null values and empty cells ---
+
+SELECT
+    COUNT(*) AS TotalRows,
+    
+    SUM(CASE WHEN FirstName IS NULL THEN 1 ELSE 0 END) AS Null_FirstName,
+    SUM(CASE WHEN FirstName = '' THEN 1 ELSE 0 END) AS Empty_FirstName,
+
+    SUM(CASE WHEN LastName IS NULL THEN 1 ELSE 0 END) AS Null_LastName,
+    SUM(CASE WHEN LastName = '' THEN 1 ELSE 0 END) AS Empty_LastName,
+
+    SUM(CASE WHEN Email IS NULL THEN 1 ELSE 0 END) AS Null_Email,
+    SUM(CASE WHEN Email = '' THEN 1 ELSE 0 END) AS Empty_Email,
+
+    SUM(CASE WHEN Phone IS NULL THEN 1 ELSE 0 END) AS Null_Phone,
+    SUM(CASE WHEN Phone = '' THEN 1 ELSE 0 END) AS Empty_Phone,
+
+    SUM(CASE WHEN Major IS NULL THEN 1 ELSE 0 END) AS Null_Major,
+    SUM(CASE WHEN Major = '' THEN 1 ELSE 0 END) AS Empty_Major,
+
+    SUM(CASE WHEN Year IS NULL THEN 1 ELSE 0 END) AS Null_Year,
+    SUM(CASE WHEN Year = '' THEN 1 ELSE 0 END) AS Empty_Year
+
+FROM Students;
+
+SELECT
+    COUNT(*) AS TotalRows,
+
+    -- CourseCode column (text)
+    SUM(CASE WHEN CourseCode IS NULL THEN 1 ELSE 0 END) AS Null_CourseCode,
+    SUM(CASE WHEN CourseCode = '' THEN 1 ELSE 0 END) AS Empty_CourseCode,
+
+    -- Title column (text)
+    SUM(CASE WHEN Title IS NULL THEN 1 ELSE 0 END) AS Null_Title,
+    SUM(CASE WHEN Title = '' THEN 1 ELSE 0 END) AS Empty_Title,
+
+    -- Credits column (numeric)
+    SUM(CASE WHEN Credits IS NULL THEN 1 ELSE 0 END) AS Null_Credits,
+
+    -- Department column (text)
+    SUM(CASE WHEN Department IS NULL THEN 1 ELSE 0 END) AS Null_Department,
+    SUM(CASE WHEN Department = '' THEN 1 ELSE 0 END) AS Empty_Department
+
+FROM Courses;
+
+SELECT
+    COUNT(*) AS TotalRows,
+
+    SUM(CASE WHEN FirstName IS NULL THEN 1 ELSE 0 END) AS Null_FirstName,
+    SUM(CASE WHEN FirstName = '' THEN 1 ELSE 0 END) AS Empty_FirstName,
+
+    SUM(CASE WHEN LastName IS NULL THEN 1 ELSE 0 END) AS Null_LastName,
+    SUM(CASE WHEN LastName = '' THEN 1 ELSE 0 END) AS Empty_LastName,
+
+    SUM(CASE WHEN Email IS NULL THEN 1 ELSE 0 END) AS Null_Email,
+    SUM(CASE WHEN Email = '' THEN 1 ELSE 0 END) AS Empty_Email,
+
+    SUM(CASE WHEN Department IS NULL THEN 1 ELSE 0 END) AS Null_Department,
+    SUM(CASE WHEN Department = '' THEN 1 ELSE 0 END) AS Empty_Department
+
+FROM Instructors;
+
+
+SELECT
+    COUNT(*) AS TotalRows,
+
+    SUM(CASE WHEN CourseID IS NULL THEN 1 ELSE 0 END) AS Null_CourseID,
+
+    SUM(CASE WHEN Semester IS NULL THEN 1 ELSE 0 END) AS Null_Semester,
+    SUM(CASE WHEN Semester = '' THEN 1 ELSE 0 END) AS Empty_Semester,
+
+    SUM(CASE WHEN InstructorID IS NULL THEN 1 ELSE 0 END) AS Null_InstructorID,
+
+    SUM(CASE WHEN Schedule IS NULL THEN 1 ELSE 0 END) AS Null_Schedule,
+    SUM(CASE WHEN Schedule = '' THEN 1 ELSE 0 END) AS Empty_Schedule
+
+FROM CourseOfferings;
+
+SELECT
+    COUNT(*) AS TotalRows,
+
+    SUM(CASE WHEN StudentID IS NULL THEN 1 ELSE 0 END) AS Null_StudentID,
+    SUM(CASE WHEN OfferingID IS NULL THEN 1 ELSE 0 END) AS Null_OfferingID,
+    SUM(CASE WHEN EnrollmentDate IS NULL THEN 1 ELSE 0 END) AS Null_EnrollmentDate,
+
+    SUM(CASE WHEN Grade IS NULL THEN 1 ELSE 0 END) AS Null_Grade,
+    SUM(CASE WHEN Grade = '' THEN 1 ELSE 0 END) AS Empty_Grade
+
+FROM Enrollments;
+
+SELECT
+    COUNT(*) AS TotalRows,
+
+    SUM(CASE WHEN CourseID IS NULL THEN 1 ELSE 0 END) AS Null_CourseID,
+    SUM(CASE WHEN PrerequisiteID IS NULL THEN 1 ELSE 0 END) AS Null_PrerequisiteID
+
+FROM Prerequisites;
+
+
+
+---Update NULL Schedule values in CourseOfferings---
+
+UPDATE CourseOfferings
+SET Schedule = 'Tue/Thu 11:00-12:30,202,2025'
+WHERE Schedule IS NULL AND Semester = 'Fall';
+
+-- Summer semester
+UPDATE CourseOfferings
+SET Schedule = 'Mon 13:00-14:30,303,2023'
+WHERE Schedule IS NULL AND Semester = 'Summer';
+
+-- Spring semester
+UPDATE CourseOfferings
+SET Schedule = 'Mon 13:00-14:30,303,2023'
+WHERE Schedule IS NULL AND Semester = 'Spring';
+
+--Update NULL Grade values in Enrollments--
+
+UPDATE Enrollments
+SET Grade = 'B'
+WHERE Grade IS NULL;
+
+--Update NULL Major values in Students-
+-- Replace NULL Majors with either 'Physics' or 'Math' randomly
+
+UPDATE Students
+SET Major = 
+    CASE 
+        WHEN ABS(CHECKSUM(NEWID())) % 2 = 0 THEN 'Physics'
+        ELSE 'Math'
+    END
+WHERE Major IS NULL;
+
+
+--Update NULL Phone values in Students--
+
+UPDATE Students
+SET Phone = '000-000-0000'
+WHERE Phone IS NULL;
+
+
+-- Data cleaning complete check
+
+SELECT
+    COUNT(*) AS TotalRows,
+    
+    SUM(CASE WHEN FirstName IS NULL THEN 1 ELSE 0 END) AS Null_FirstName,
+    SUM(CASE WHEN FirstName = '' THEN 1 ELSE 0 END) AS Empty_FirstName,
+
+    SUM(CASE WHEN LastName IS NULL THEN 1 ELSE 0 END) AS Null_LastName,
+    SUM(CASE WHEN LastName = '' THEN 1 ELSE 0 END) AS Empty_LastName,
+
+    SUM(CASE WHEN Email IS NULL THEN 1 ELSE 0 END) AS Null_Email,
+    SUM(CASE WHEN Email = '' THEN 1 ELSE 0 END) AS Empty_Email,
+
+    SUM(CASE WHEN Phone IS NULL THEN 1 ELSE 0 END) AS Null_Phone,
+    SUM(CASE WHEN Phone = '' THEN 1 ELSE 0 END) AS Empty_Phone,
+
+    SUM(CASE WHEN Major IS NULL THEN 1 ELSE 0 END) AS Null_Major,
+    SUM(CASE WHEN Major = '' THEN 1 ELSE 0 END) AS Empty_Major,
+
+    SUM(CASE WHEN Year IS NULL THEN 1 ELSE 0 END) AS Null_Year,
+    SUM(CASE WHEN Year = '' THEN 1 ELSE 0 END) AS Empty_Year
+
+FROM Students;
+
+SELECT
+    COUNT(*) AS TotalRows,
+
+    -- CourseCode column (text)
+    SUM(CASE WHEN CourseCode IS NULL THEN 1 ELSE 0 END) AS Null_CourseCode,
+    SUM(CASE WHEN CourseCode = '' THEN 1 ELSE 0 END) AS Empty_CourseCode,
+
+    -- Title column (text)
+    SUM(CASE WHEN Title IS NULL THEN 1 ELSE 0 END) AS Null_Title,
+    SUM(CASE WHEN Title = '' THEN 1 ELSE 0 END) AS Empty_Title,
+
+    -- Credits column (numeric)
+    SUM(CASE WHEN Credits IS NULL THEN 1 ELSE 0 END) AS Null_Credits,
+
+    -- Department column (text)
+    SUM(CASE WHEN Department IS NULL THEN 1 ELSE 0 END) AS Null_Department,
+    SUM(CASE WHEN Department = '' THEN 1 ELSE 0 END) AS Empty_Department
+
+FROM Courses;
+
+SELECT
+    COUNT(*) AS TotalRows,
+
+    SUM(CASE WHEN FirstName IS NULL THEN 1 ELSE 0 END) AS Null_FirstName,
+    SUM(CASE WHEN FirstName = '' THEN 1 ELSE 0 END) AS Empty_FirstName,
+
+    SUM(CASE WHEN LastName IS NULL THEN 1 ELSE 0 END) AS Null_LastName,
+    SUM(CASE WHEN LastName = '' THEN 1 ELSE 0 END) AS Empty_LastName,
+
+    SUM(CASE WHEN Email IS NULL THEN 1 ELSE 0 END) AS Null_Email,
+    SUM(CASE WHEN Email = '' THEN 1 ELSE 0 END) AS Empty_Email,
+
+    SUM(CASE WHEN Department IS NULL THEN 1 ELSE 0 END) AS Null_Department,
+    SUM(CASE WHEN Department = '' THEN 1 ELSE 0 END) AS Empty_Department
+
+FROM Instructors;
+
+
+SELECT
+    COUNT(*) AS TotalRows,
+
+    SUM(CASE WHEN CourseID IS NULL THEN 1 ELSE 0 END) AS Null_CourseID,
+
+    SUM(CASE WHEN Semester IS NULL THEN 1 ELSE 0 END) AS Null_Semester,
+    SUM(CASE WHEN Semester = '' THEN 1 ELSE 0 END) AS Empty_Semester,
+
+    SUM(CASE WHEN InstructorID IS NULL THEN 1 ELSE 0 END) AS Null_InstructorID,
+
+    SUM(CASE WHEN Schedule IS NULL THEN 1 ELSE 0 END) AS Null_Schedule,
+    SUM(CASE WHEN Schedule = '' THEN 1 ELSE 0 END) AS Empty_Schedule
+
+FROM CourseOfferings;
+
+SELECT
+    COUNT(*) AS TotalRows,
+
+    SUM(CASE WHEN StudentID IS NULL THEN 1 ELSE 0 END) AS Null_StudentID,
+    SUM(CASE WHEN OfferingID IS NULL THEN 1 ELSE 0 END) AS Null_OfferingID,
+    SUM(CASE WHEN EnrollmentDate IS NULL THEN 1 ELSE 0 END) AS Null_EnrollmentDate,
+
+    SUM(CASE WHEN Grade IS NULL THEN 1 ELSE 0 END) AS Null_Grade,
+    SUM(CASE WHEN Grade = '' THEN 1 ELSE 0 END) AS Empty_Grade
+
+FROM Enrollments;
+
+SELECT
+    COUNT(*) AS TotalRows,
+
+    SUM(CASE WHEN CourseID IS NULL THEN 1 ELSE 0 END) AS Null_CourseID,
+    SUM(CASE WHEN PrerequisiteID IS NULL THEN 1 ELSE 0 END) AS Null_PrerequisiteID
+
+FROM Prerequisites;
+
+--Querying, Data Integrity, and Business Logic--
+
+---Question 1. Retrieve all courses a student is enrolled in for a given semester.--
+
+SELECT 
+    S.FirstName, 
+    S.LastName, 
+    S.Major, 
+    C.CourseCode, 
+    C.Title, 
+    C.CourseID, 
+    C.Department, 
+    Co.Semester
+FROM 
+    Students S
+INNER JOIN Enrollments E ON S.StudentID = E.StudentID
+INNER JOIN CourseOfferings Co ON E.OfferingID = Co.OfferingID
+INNER JOIN Courses C ON Co.CourseID = C.CourseID
+WHERE 
+    Co.Semester IN ('Fall', 'Winter', 'Summer', 'Spring');
+
+
+
+SELECT 
+    CO.Semester,
+    S.FirstName, 
+    S.LastName, 
+    S.Major, 
+    C.CourseCode, 
+    C.Title, 
+    C.CourseID, 
+    C.Department
+FROM 
+    Students S
+INNER JOIN Enrollments E ON S.StudentID = E.StudentID
+INNER JOIN CourseOfferings CO ON E.OfferingID = CO.OfferingID
+INNER JOIN Courses C ON CO.CourseID = C.CourseID
+WHERE 
+    CO.Semester LIKE 'Fall%' 
+    OR CO.Semester LIKE 'Winter%' 
+    OR CO.Semester LIKE 'Spring%' 
+    OR CO.Semester LIKE 'Summer%'
+ORDER BY 
+    CO.Semester, 
+    S.LastName, 
+    S.FirstName;
+
+
+
+--Question 2. Display a student's transcript (course titles, semesters, grades, GPA).
+
+SELECT 
+    S.StudentID,
+    S.FirstName,
+    S.LastName,
+    C.Title AS CourseTitle,
+    CO.Semester,
+    E.Grade,
+    C.Credits,
+    
+    -- Grade Points based on letter grade multiplied by course credits
+    (
+        CASE E.Grade
+            WHEN 'A'  THEN 4.0
+            WHEN 'A-' THEN 3.7
+            WHEN 'B+' THEN 3.3
+            WHEN 'B'  THEN 3.0
+            WHEN 'B-' THEN 2.7
+            WHEN 'C+' THEN 2.3
+            WHEN 'C'  THEN 2.0
+            WHEN 'C-' THEN 1.7
+            WHEN 'D'  THEN 1.0
+            WHEN 'F'  THEN 0.0
+            ELSE NULL
+        END
+    ) * C.Credits AS GradePoints,
+
+    -- GPA per Semester using windowed aggregate functions
+    ROUND(
+        SUM(
+            (
+                CASE E.Grade
+                    WHEN 'A'  THEN 4.0
+                    WHEN 'A-' THEN 3.7
+                    WHEN 'B+' THEN 3.3
+                    WHEN 'B'  THEN 3.0
+                    WHEN 'B-' THEN 2.7
+                    WHEN 'C+' THEN 2.3
+                    WHEN 'C'  THEN 2.0
+                    WHEN 'C-' THEN 1.7
+                    WHEN 'D'  THEN 1.0
+                    WHEN 'F'  THEN 0.0
+                    ELSE NULL
+                END
+            ) * C.Credits
+        ) OVER (PARTITION BY CO.Semester) 
+        / 
+        SUM(C.Credits) OVER (PARTITION BY CO.Semester), 
+        2
+    ) AS GPA_Per_Semester
+
+FROM 
+    Students S
+INNER JOIN Enrollments E ON S.StudentID = E.StudentID
+INNER JOIN CourseOfferings CO ON E.OfferingID = CO.OfferingID
+INNER JOIN Courses C ON CO.CourseID = C.CourseID
+
+WHERE 
+    S.StudentID = 15 -- Change as needed for any student transcript
+
+ORDER BY 
+    CO.Semester;
+
+
+-- **Question 3**: Find students who haven't completed prerequisites for a course.
+
+SELECT DISTINCT
+    S.StudentID,
+    S.FirstName,
+    S.LastName,
+    CO.CourseID,
+    C.Title AS CourseTitle
+FROM
+    Students S
+JOIN Enrollments E ON S.StudentID = E.StudentID
+JOIN CourseOfferings CO ON E.OfferingID = CO.OfferingID
+JOIN Courses C ON CO.CourseID = C.CourseID
+JOIN Prerequisites P ON P.CourseID = CO.CourseID
+WHERE
+    NOT EXISTS (
+        SELECT 1
+        FROM Enrollments E2
+        JOIN CourseOfferings CO2 ON E2.OfferingID = CO2.OfferingID
+        WHERE E2.StudentID = S.StudentID
+          AND CO2.CourseID = P.PrerequisiteID
+          AND E2.Grade IN ('A','A-','B+','B','B-','C+','C','C-','D')  -- Passing grades
+    )
+ORDER BY
+    S.StudentID, CO.CourseID;
+
+
+---B) Administrative Queries----
+
+
+---List all courses offered in a department in a given semester-----
+
+SELECT
+    C.CourseID,
+    C.Title AS CourseTitle,
+    C.Department,
+    CO.OfferingID,
+    CO.Semester
+FROM 
+    Courses C 
+INNER JOIN CourseOfferings CO  
+    ON C.CourseID = CO.CourseID
+ORDER BY
+    CO.Semester,
+    C.Department,
+    C.CourseID;
+
+--list courses base on condition (department and semester)
+
+SELECT
+    C.CourseID,
+    C.Title AS CourseTitle,
+    C.Department,
+    CO.OfferingID,
+    CO.Semester
+FROM 
+    Courses C 
+INNER JOIN CourseOfferings CO  
+    ON C.CourseID = CO.CourseID
+WHERE
+    C.Department = 'Biology' -- Replace with desired department
+    AND CO.Semester = 'Spring'     -- Replace with desired semester
+ORDER BY
+    CO.Semester,
+    C.Department,
+    C.CourseID;
+
+Select * from CourseOfferings;
+
+-----Generate instructor-wise course loads per semester----
+
+SELECT
+    I.InstructorID,
+    I.FirstName,
+    I.LastName,
+    CO.Semester,
+    COUNT(CO.OfferingID) AS CoursesTaught
+FROM
+    Instructors I
+JOIN CourseOfferings CO ON I.InstructorID = CO.InstructorID
+GROUP BY
+    I.InstructorID,
+    I.FirstName,
+    I.LastName,
+    CO.Semester
+ORDER BY
+    CO.Semester,
+    I.LastName,
+    I.FirstName;
+
+----Find under-enrolled offerings (less than 5 students)---
+
+SELECT
+    S.FirstName,
+    S.LastName,
+    E.OfferingID,
+    E.EnrollmentID
+FROM
+    Enrollments E
+JOIN
+    Students S ON E.StudentID = S.StudentID
+WHERE
+    E.OfferingID IN (
+        SELECT OfferingID
+        FROM Enrollments
+        GROUP BY OfferingID
+        HAVING COUNT(StudentID) < 5
+    )
+ORDER BY
+    E.OfferingID, S.LastName, S.FirstName;
+
+
+---Update a student’s major---
+
+Select * from students
+where StudentID = 1;
+
+UPDATE Students
+SET Major = 'Biochemistry'
+WHERE StudentID = 1;
+
+--Assign grades to students post-semester--
+
+select * from Enrollments
+where StudentID = 163 and OfferingID = 196
+
+UPDATE Enrollments
+SET Grade = 'A'
+WHERE StudentID = 163
+  AND OfferingID = 196;
+
+
+
+---Drop a student from a course.----
+
+select * from Enrollments
+where EnrollmentID = 1
+
+DELETE FROM Enrollments
+WHERE StudentID = 386 AND OfferingID = 105;
+
+----StudentTranscriptView: Combines student, course, and grade info with GPA----
+
+CREATE VIEW Student_Transcript_View AS
+SELECT
+    S.StudentID,
+    S.FirstName,
+    S.LastName,
+    C.CourseID,
+    C.Title AS CourseTitle,
+    E.OfferingID,
+    E.Grade,
+    -- Example GPA calculation assuming letter grades converted to points
+    CASE E.Grade
+        WHEN 'A'  THEN 4.0
+        WHEN 'A-' THEN 3.7
+        WHEN 'B+' THEN 3.3
+        WHEN 'B'  THEN 3.0
+        WHEN 'B-' THEN 2.7
+        WHEN 'C+' THEN 2.3
+        WHEN 'C'  THEN 2.0
+        WHEN 'C-' THEN 1.7
+        WHEN 'D'  THEN 1.0
+        WHEN 'F'  THEN 0.0
+        ELSE NULL
+    END AS GradePoints
+FROM Students S
+JOIN Enrollments E ON S.StudentID = E.StudentID
+JOIN CourseOfferings CO ON E.OfferingID = CO.OfferingID
+JOIN Courses C ON CO.CourseID = C.CourseID;
+
+
+Select * from Student_Transcript_View;
+
+
+--InstructorScheduleView: Lists courses and schedule for each instructor--
+
+CREATE VIEW Instructor_Schedule_View AS
+SELECT
+    I.InstructorID,
+    I.FirstName,
+    I.LastName,
+    C.CourseID,
+    C.Title AS CourseTitle,
+    CO.OfferingID,
+    CO.Semester,
+
+    -- Extract and clean Year (3rd comma-separated value)
+    CAST(
+        REPLACE(
+            LTRIM(RTRIM(
+                SUBSTRING(
+                    CO.Schedule,
+                    CHARINDEX(',', CO.Schedule, CHARINDEX(',', CO.Schedule) + 1) + 1,
+                    LEN(CO.Schedule)
+                )
+            )), '"', ''
+        ) AS INT
+    ) AS Year,
+
+    -- Extract and clean Room (2nd comma-separated value)
+    CAST(
+        REPLACE(
+            LTRIM(RTRIM(
+                SUBSTRING(
+                    CO.Schedule,
+                    CHARINDEX(',', CO.Schedule) + 1,
+                    CHARINDEX(',', CO.Schedule, CHARINDEX(',', CO.Schedule) + 1) - CHARINDEX(',', CO.Schedule) - 1
+                )
+            )), '"', ''
+        ) AS INT
+    ) AS Room,
+
+    -- Extract Days (before first space)
+    SUBSTRING(
+        CO.Schedule,
+        1,
+        CHARINDEX(' ', CO.Schedule) - 1
+    ) AS Days,
+
+    -- Extract StartTime (after first space, before '-')
+    SUBSTRING(
+        CO.Schedule,
+        CHARINDEX(' ', CO.Schedule) + 1,
+        CHARINDEX('-', CO.Schedule) - CHARINDEX(' ', CO.Schedule) - 1
+    ) AS StartTime,
+
+    -- Extract EndTime (between '-' and first comma)
+    SUBSTRING(
+        CO.Schedule,
+        CHARINDEX('-', CO.Schedule) + 1,
+        CHARINDEX(',', CO.Schedule) - CHARINDEX('-', CO.Schedule) - 1
+    ) AS EndTime
+
+FROM Instructors I
+JOIN CourseOfferings CO ON I.InstructorID = CO.InstructorID
+JOIN Courses C ON CO.CourseID = C.CourseID;
+
+
+Select * from Instructor_Schedule_View;
+
+--Average GPA Across All Students---
+
+SELECT 
+    AVG(
+        CASE E.Grade
+            WHEN 'A'  THEN 4.0
+            WHEN 'A-' THEN 3.7
+            WHEN 'B+' THEN 3.3
+            WHEN 'B'  THEN 3.0
+            WHEN 'B-' THEN 2.7
+            WHEN 'C+' THEN 2.3
+            WHEN 'C'  THEN 2.0
+            WHEN 'C-' THEN 1.7
+            WHEN 'D'  THEN 1.0
+            WHEN 'F'  THEN 0.0
+            ELSE NULL
+        END
+    ) AS AverageGPA
+FROM Enrollments E;
+
+--Department with Highest Enrollment and GPA--
+
+SELECT TOP 1
+    C.Department,
+    COUNT(E.EnrollmentID) AS TotalEnrollments,
+    AVG(
+        CASE E.Grade
+            WHEN 'A'  THEN 4.0
+            WHEN 'A-' THEN 3.7
+            WHEN 'B+' THEN 3.3
+            WHEN 'B'  THEN 3.0
+            WHEN 'B-' THEN 2.7
+            WHEN 'C+' THEN 2.3
+            WHEN 'C'  THEN 2.0
+            WHEN 'C-' THEN 1.7
+            WHEN 'D'  THEN 1.0
+            WHEN 'F'  THEN 0.0
+            ELSE NULL
+        END
+    ) AS AverageGPA
+FROM Enrollments E
+JOIN CourseOfferings CO ON E.OfferingID = CO.OfferingID
+JOIN Courses C ON CO.CourseID = C.CourseID
+GROUP BY C.Department
+ORDER BY TotalEnrollments DESC;
+
+
+--Percentage of Under-Enrolled Offerings per Semester--
+
+WITH OfferingCounts AS (
+    SELECT 
+        CO.OfferingID,
+        CO.Semester,
+        COUNT(E.StudentID) AS EnrollmentCount
+    FROM CourseOfferings CO
+    LEFT JOIN Enrollments E ON CO.OfferingID = E.OfferingID
+    GROUP BY CO.OfferingID, CO.Semester
+),
+AverageEnrollment AS (
+    SELECT 
+        AVG(EnrollmentCount * 1.0) AS AvgEnrollment
+    FROM OfferingCounts
+),
+UnderEnrolledSemesters AS (
+    SELECT 
+        Semester,
+        COUNT(*) AS UnderEnrolled
+    FROM OfferingCounts, AverageEnrollment
+    WHERE EnrollmentCount < AvgEnrollment
+    GROUP BY Semester
+),
+TotalSemesters AS (
+    SELECT 
+        Semester,
+        COUNT(*) AS TotalOfferings
+    FROM OfferingCounts
+    GROUP BY Semester
+)
+SELECT 
+    T.Semester,
+    T.TotalOfferings,
+    U.UnderEnrolled,
+    ROUND((U.UnderEnrolled * 100.0) / T.TotalOfferings, 2) AS UnderEnrolledPercentage
+FROM TotalSemesters T
+LEFT JOIN UnderEnrolledSemesters U ON T.Semester = U.Semester
+ORDER BY UnderEnrolledPercentage DESC;
+
+
+---Which departments offer the most credits?
+
+SELECT 
+    Department,
+    SUM(C.Credits) AS TotalCredits
+FROM 
+    Courses C
+GROUP BY Department
+ORDER BY TotalCredits DESC;
+
+---Which course has the highest enrollment?
+
+
+
+----for each semester and each course, the total number of students who passed and failed
+
+SELECT
+    CO.Semester,
+    C.CourseID,
+    C.Title AS CourseTitle,
+    
+    -- Count of students who passed
+    SUM(CASE WHEN E.Grade IN ('A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D') THEN 1 ELSE 0 END) AS PassedStudents,
+    
+    -- Count of students who failed
+    SUM(CASE WHEN E.Grade = 'F' THEN 1 ELSE 0 END) AS FailedStudents
+
+FROM Enrollments E
+JOIN CourseOfferings CO ON E.OfferingID = CO.OfferingID
+JOIN Courses C ON CO.CourseID = C.CourseID
+
+GROUP BY
+    CO.Semester,
+    C.CourseID,
+    C.Title
+
+ORDER BY
+    CO.Semester,
+    C.Title;
+
+--Which course has the highest enrollment?
+
+SELECT Top 3
+    C.CourseID,
+    C.Title,
+    COUNT(E.StudentID) AS TotalEnrolled
+FROM 
+    Courses C
+JOIN CourseOfferings CO ON C.CourseID = CO.CourseID
+JOIN Enrollments E ON CO.OfferingID = E.OfferingID
+GROUP BY C.CourseID, C.Title
+ORDER BY TotalEnrolled DESC;
+
+
+-- ***Which instructors have taught the most students overall?**
+
+SELECT TOP 6
+    I.InstructorID,
+    I.FirstName,
+    I.LastName,
+    COUNT(E.StudentID) AS TotalStudentsTaught
+FROM 
+    Instructors I
+JOIN CourseOfferings CO ON I.InstructorID = CO.InstructorID
+JOIN Enrollments E ON CO.OfferingID = E.OfferingID
+GROUP BY I.InstructorID, I.FirstName, I.LastName
+ORDER BY TotalStudentsTaught DESC;
+
+
+
+***Which semesters had the highest average GPA?**
+
+SELECT 
+    CO.Semester,
+    ROUND(SUM(
+        CASE E.Grade
+            WHEN 'A'  THEN 4.0
+            WHEN 'A-' THEN 3.7
+            WHEN 'B+' THEN 3.3
+            WHEN 'B'  THEN 3.0
+            WHEN 'B-' THEN 2.7
+            WHEN 'C+' THEN 2.3
+            WHEN 'C'  THEN 2.0
+            WHEN 'C-' THEN 1.7
+            WHEN 'D'  THEN 1.0
+            WHEN 'F'  THEN 0.0
+        END * C.Credits
+    ) / SUM(C.Credits), 2) AS AvgGPA
+FROM 
+    CourseOfferings CO
+JOIN Enrollments E ON CO.OfferingID = E.OfferingID
+JOIN Courses C ON CO.CourseID = C.CourseID
+GROUP BY CO.Semester
+ORDER BY AvgGPA DESC;
+
+
+-- How many students are majoring in each department?
+
+SELECT 
+    Major,
+    COUNT(*) AS TotalStudents
+FROM 
+    Students
+GROUP BY Major
+ORDER BY TotalStudents DESC;
+
+
+--Which  students have taken the most courses?
+
+
+SELECT Top 6 
+    S.StudentID,
+    S.FirstName,
+    S.LastName,
+    COUNT(E.EnrollmentID) AS CoursesTaken
+FROM 
+    Students S
+JOIN Enrollments E ON S.StudentID = E.StudentID
+GROUP BY S.StudentID, S.FirstName, S.LastName
+ORDER BY CoursesTaken DESC;
+
+
+--What is the pass/fail rate per course?
+
+SELECT 
+    C.CourseID,
+    C.Title,
+    SUM(CASE WHEN E.Grade IN ('A','A-','B+','B','B-','C+','C','C-','D') THEN 1 ELSE 0 END) AS Passes,
+    SUM(CASE WHEN E.Grade = 'F' THEN 1 ELSE 0 END) AS Fails,
+    COUNT(*) AS Total,
+    ROUND(SUM(CASE WHEN E.Grade = 'F' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS FailRatePercentage
+FROM 
+    Courses C
+JOIN CourseOfferings CO ON C.CourseID = CO.CourseID
+JOIN Enrollments E ON CO.OfferingID = E.OfferingID
+GROUP BY C.CourseID, C.Title
+ORDER BY FailRatePercentage DESC;
+
+
+--for each semester and each course, the total number of students who passed and failed.
+
+
+SELECT
+    CO.Semester,
+    C.CourseID,
+    C.Title AS CourseTitle,
+    
+    -- Count of students who passed
+    SUM(CASE WHEN E.Grade IN ('A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D') THEN 1 ELSE 0 END) AS PassedStudents,
+    
+    -- Count of students who failed
+    SUM(CASE WHEN E.Grade = 'F' THEN 1 ELSE 0 END) AS FailedStudents
+
+FROM Enrollments E
+JOIN CourseOfferings CO ON E.OfferingID = CO.OfferingID
+JOIN Courses C ON CO.CourseID = C.CourseID
+
+GROUP BY
+    CO.Semester,
+    C.CourseID,
+    C.Title
+
+ORDER BY
+    CO.Semester,
+    C.Title;
+
+
+
